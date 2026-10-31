@@ -34,7 +34,7 @@ export function MappingPanel({ dataset, onChange }: MappingPanelProps) {
       <div className="panel-heading">
         <div>
           <h2 id="mapping-title">Column mapping</h2>
-          <p>Match source columns to the fields ERP uses. Original headers remain unchanged.</p>
+          <p>Match source columns to the fields ERPWAM uses. Original headers remain unchanged.</p>
         </div>
         <div className="mapping-statuses">
           <span className={`status-chip ${dataset.mappingsConfirmed ? 'success' : 'attention'}`}>

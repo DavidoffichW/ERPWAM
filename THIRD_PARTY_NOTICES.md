@@ -1,6 +1,6 @@
 # Third-Party Notices
 
-Enterprise Resource Planner includes or builds with the following principal open-source packages. Exact direct and transitive versions are recorded in `package-lock.json`.
+ERPWAM includes or builds with the following principal open-source packages. Exact direct and transitive versions are recorded in `package-lock.json`.
 
 | Package | Use | License |
 | --- | --- | --- |
@@ -15,7 +15,7 @@ Enterprise Resource Planner includes or builds with the following principal open
 
 The locked dependency license audit also includes permissive Apache-2.0, BSD-3-Clause, ISC, MIT, and MPL-2.0 packages. MPL-2.0 entries are Lightning CSS build-tool binaries; they are not application source authored by this project. Upstream copyright and license files in the resolved packages remain controlling.
 
-The Pages workflow pins `actions/checkout`, `actions/setup-node`, `actions/configure-pages`, `actions/upload-pages-artifact`, and `actions/deploy-pages` to reviewed commit identities. Those actions execute on GitHub-hosted automation and are not bundled into ERP's browser runtime.
+The Pages workflow pins `actions/checkout`, `actions/setup-node`, `actions/configure-pages`, `actions/upload-pages-artifact`, and `actions/deploy-pages` to reviewed commit identities. Those actions execute on GitHub-hosted automation and are not bundled into ERPWAM's browser runtime.
 
 ## MIT License text
 
@@ -35,4 +35,4 @@ ISC: <https://opensource.org/license/isc-license-txt>
 
 MPL-2.0: <https://www.mozilla.org/MPL/2.0/>
 
-ERP itself is distributed under the MIT License. See `LICENSE` for the project license text.
+ERPWAM itself is distributed under the MIT License. See `LICENSE` for the project license text.

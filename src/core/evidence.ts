@@ -15,7 +15,7 @@ const CASE_ENVELOPE_VERSION = '2.0';
 const BACKUP_ENVELOPE_VERSION = '2.0';
 
 export interface PortableCaseEnvelope {
-  product: 'Enterprise Resource Planner';
+  product: 'ERPWAM' | 'Enterprise Resource Planner';
   envelopeVersion: typeof CASE_ENVELOPE_VERSION;
   contentType: 'ERP_CASE';
   planningCase: PlanningCase;
@@ -23,7 +23,7 @@ export interface PortableCaseEnvelope {
 }
 
 export interface ApplicationBackupEnvelope {
-  product: 'Enterprise Resource Planner';
+  product: 'ERPWAM' | 'Enterprise Resource Planner';
   envelopeVersion: typeof BACKUP_ENVELOPE_VERSION;
   contentType: 'ERP_APPLICATION_BACKUP';
   state: PersistedApplicationState;
@@ -282,7 +282,7 @@ export async function verifyPlanningCase(planningCase: PlanningCase): Promise<bo
 export async function exportPortableCase(planningCase: PlanningCase): Promise<string> {
   if (!await verifyPlanningCase(planningCase)) throw new Error('Case integrity validation failed before export.');
   const body = {
-    product: 'Enterprise Resource Planner' as const,
+    product: 'ERPWAM' as const,
     envelopeVersion: CASE_ENVELOPE_VERSION,
     contentType: 'ERP_CASE' as const,
     planningCase,
@@ -295,7 +295,7 @@ export async function importPortableCase(serialized: string): Promise<PlanningCa
   try { value = JSON.parse(serialized); } catch { throw new Error('Portable Case is not valid JSON.'); }
   if (!value || typeof value !== 'object') throw new Error('Portable Case envelope is invalid.');
   const envelope = value as Partial<PortableCaseEnvelope>;
-  if (envelope.product !== 'Enterprise Resource Planner' || !['1.0', CASE_ENVELOPE_VERSION].includes(String(envelope.envelopeVersion)) ||
+  if (!['ERPWAM', 'Enterprise Resource Planner'].includes(String(envelope.product)) || !['1.0', CASE_ENVELOPE_VERSION].includes(String(envelope.envelopeVersion)) ||
       envelope.contentType !== 'ERP_CASE' || !envelope.planningCase || typeof envelope.digest !== 'string') {
     throw new Error('Portable Case version or content type is unsupported.');
   }
@@ -312,7 +312,7 @@ export function emptyApplicationState(): PersistedApplicationState {
 
 export async function exportApplicationBackup(state: PersistedApplicationState): Promise<string> {
   const body = {
-    product: 'Enterprise Resource Planner' as const,
+    product: 'ERPWAM' as const,
     envelopeVersion: BACKUP_ENVELOPE_VERSION,
     contentType: 'ERP_APPLICATION_BACKUP' as const,
     state,
@@ -325,7 +325,7 @@ export async function importApplicationBackup(serialized: string): Promise<Persi
   try { value = JSON.parse(serialized); } catch { throw new Error('Application backup is not valid JSON.'); }
   if (!value || typeof value !== 'object') throw new Error('Application backup envelope is invalid.');
   const envelope = value as Partial<ApplicationBackupEnvelope>;
-  if (envelope.product !== 'Enterprise Resource Planner' || !['1.0', BACKUP_ENVELOPE_VERSION].includes(String(envelope.envelopeVersion)) ||
+  if (!['ERPWAM', 'Enterprise Resource Planner'].includes(String(envelope.product)) || !['1.0', BACKUP_ENVELOPE_VERSION].includes(String(envelope.envelopeVersion)) ||
       envelope.contentType !== 'ERP_APPLICATION_BACKUP' || !envelope.state || !['1.0', '2.0'].includes(String((envelope.state as {schemaVersion?: unknown}).schemaVersion)) || typeof envelope.digest !== 'string') {
     throw new Error('Application backup version or content type is unsupported.');
   }
@@ -339,12 +339,12 @@ export async function importApplicationBackup(serialized: string): Promise<Persi
 }
 
 export async function migrateApplicationState(value: unknown): Promise<PersistedApplicationState> {
-  if (!value || typeof value !== 'object') throw new Error('ERP application state is not an object.');
+  if (!value || typeof value !== 'object') throw new Error('ERPWAM application state is not an object.');
   const legacy = value as Record<string, unknown>;
-  if (!['1.0', '2.0'].includes(String(legacy.schemaVersion))) throw new Error(`ERP application-state schema “${String(legacy.schemaVersion)}” is unsupported.`);
+  if (!['1.0', '2.0'].includes(String(legacy.schemaVersion))) throw new Error(`ERPWAM application-state schema “${String(legacy.schemaVersion)}” is unsupported.`);
   const base = { ...emptyApplicationState(), ...legacy } as unknown as PersistedApplicationState;
   if (!Array.isArray(base.workspaces) || !Array.isArray(base.priorityLists) || !Array.isArray(base.cases) || !Array.isArray(base.scenarios) || !Array.isArray(base.decisionDrafts)) {
-    throw new Error('ERP application state is missing required collections.');
+    throw new Error('ERPWAM application state is missing required collections.');
   }
   const priorityLists: PriorityListRevision[] = [];
   for (const candidate of base.priorityLists as unknown[]) {

@@ -1,6 +1,6 @@
 {
-  "name": "Enterprise Resource Planner",
-  "short_name": "ERP",
+  "name": "ERPWAM",
+  "short_name": "ERPWAM",
   "description": "Offline-capable operational planning and decision evidence.",
   "id": "./",
   "start_url": "./",
@@ -9,6 +9,6 @@
   "background_color": "#07101f",
   "theme_color": "#0c1829",
   "icons": [
-    { "src": "./erp-mark.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+    { "src": "./erpwam-mark.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ]
 }

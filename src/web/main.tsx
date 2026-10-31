@@ -20,7 +20,7 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
       registration.addEventListener('updatefound', () => {
         const worker = registration.installing;
         worker?.addEventListener('statechange', () => {
-          if (worker.state === 'installed' && navigator.serviceWorker.controller && window.confirm('An ERP application update is ready. Reload now? Locally committed state is preserved in this browser.')) {
+          if (worker.state === 'installed' && navigator.serviceWorker.controller && window.confirm('An ERPWAM update is ready. Reload now? Locally committed state is preserved in this browser.')) {
             acceptedUpdate = true;
             worker.postMessage({ type: 'SKIP_WAITING' });
           }

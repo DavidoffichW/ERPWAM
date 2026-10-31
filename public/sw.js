@@ -1,5 +1,5 @@
-const CACHE_VERSION = 'erp-static-v0.1.0';
-const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './erp-mark.svg', './runtime-manifest.json'];
+const CACHE_VERSION = 'erp-static-v0.1.0-erpwam';
+const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './erpwam-mark.svg', './runtime-manifest.json'];
 
 async function primeAppShell() {
   const cache = await caches.open(CACHE_VERSION);

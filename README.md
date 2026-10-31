@@ -1,8 +1,8 @@
-# Enterprise Resource Planner
+# ERPWAM
 
 > Plan job replacements and work portfolios from Excel.
 
-Enterprise Resource Planner is a local-first planning workbench for maintenance
+ERPWAM is a local-first planning workbench for maintenance
 and operations teams. Import a schedule, inspect it in a spreadsheet-style
 view, compare possible replacements, and keep a record of the decision.
 
@@ -11,9 +11,9 @@ view of the data, but they never make the final choice for you.
 
 Despite the name, this is not a finance or accounting suite.
 
-**[Open the live application](https://davidoffichw.github.io/enterprise-resource-planner/)**
+**[Open the live application](https://davidoffichw.github.io/ERPWAM/)**
 
-![ERP Recommendations workbench with a ranked replacement selected](media/erp-recommendations-workflow.png)
+![ERPWAM recommendations workbench with a ranked replacement selected](media/erpwam-recommendations-workflow.png)
 
 ## What it does
 
@@ -46,8 +46,8 @@ visible instead of silently removing those choices.
 You need Node.js 24.15 or newer and npm 11 or newer.
 
 ```bash
-git clone https://github.com/DavidoffichW/enterprise-resource-planner.git
-cd enterprise-resource-planner
+git clone https://github.com/DavidoffichW/ERPWAM.git
+cd ERPWAM
 npm ci
 npm run dev
 ```
@@ -67,7 +67,7 @@ Node.js, Python, or a backend at runtime.
 
 ## Working with data
 
-ERP keeps the original workbook structure and records how imported columns map
+ERPWAM keeps the original workbook structure and records how imported columns map
 to planning roles. Source values, edits, mappings, rankings, and saved decisions
 remain distinguishable instead of being flattened into one opaque dataset.
 
@@ -99,14 +99,14 @@ device.
 The separation keeps planning rules independently testable and prevents React
 state from becoming the source of domain truth.
 
-ERP uses TypeScript, React, Vite, AG Grid Community, `read-excel-file`,
+ERPWAM uses TypeScript, React, Vite, AG Grid Community, `read-excel-file`,
 `write-excel-file`, and `fflate`. Exact dependency versions are recorded in
 `package-lock.json`; third-party license information is in
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## Limits
 
-ERP is a decision-support tool. It does not provide organization-specific
+ERPWAM is a decision-support tool. It does not provide organization-specific
 validation, policy enforcement, encrypted team storage, automatic sync, or a
 guarantee that a recommendation is operationally correct.
 
@@ -119,7 +119,7 @@ The production build can be served from any suitable static host over HTTP or
 HTTPS. Opening `dist/index.html` directly with `file://` is not supported.
 
 The repository includes a manual GitHub Pages workflow in
-`.github/workflows/deploy-pages.yml`. Set `ERP_BASE_PATH` when deploying below
+`.github/workflows/deploy-pages.yml`. Set `ERPWAM_BASE_PATH` when deploying below
 a repository subpath.
 
 ## License

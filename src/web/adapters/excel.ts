@@ -873,7 +873,7 @@ export async function preparePlanningWorkbook(workbook: WorkbookState): Promise<
     ].map((value) => safeSpreadsheetCell(value)))),
   ];
   const readmeData: SheetData = [
-    [safeSpreadsheetCell('Enterprise Resource Planner workbook', true)],
+    [safeSpreadsheetCell('ERPWAM workbook', true)],
     [safeSpreadsheetCell('Envelope version'), safeSpreadsheetCell(WORKBOOK_ENVELOPE_VERSION)],
     [safeSpreadsheetCell('Planning worksheets'), safeSpreadsheetCell(stamped.sheets.length)],
     [safeSpreadsheetCell('Active worksheet'), safeSpreadsheetCell(envelopeSheets[stamped.activeSheetIndex]?.visibleSheetName ?? envelopeSheets[0].visibleSheetName)],
