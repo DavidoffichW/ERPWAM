@@ -93,7 +93,7 @@ This is semantic round-trip support for the declared planning contract, not univ
 
 Every ranking method must return the complete, unique candidate population admitted by the decision context. Missing inputs leave a candidate visibly unranked; they do not remove it. Priority List ranks are preserved exactly, including gaps.
 
-The weighted reference and synthetic linear model are explainable demonstrations. Their scores are not probabilities, policy decisions, or evidence of operational effectiveness. A human can select a loaded replacement without running either method.
+The weighted reference and synthetic linear model are explainable demonstrations, not operationally trained or calibrated predictors. Their scores are ranking signals, not probabilities, policy decisions, or evidence of operational effectiveness. Keeping them advisory favors auditability and human authority over automatic model-driven selection. A human can select a loaded replacement without running either method.
 
 ## Portfolio optimization
 
