@@ -9,6 +9,7 @@ import {
 import { AgGridReact } from 'ag-grid-react';
 import type { CellScalar, PlanningCell, PlanningDataset } from '../../contracts';
 import { editCell, restoreCell } from '../../core';
+import { Icon } from './Icon';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -140,32 +141,25 @@ export function PlanningGrid({ dataset, onChange }: PlanningGridProps) {
   };
 
   return (
-    <section className="panel grid-panel" aria-labelledby="grid-title">
-      <div className="panel-heading grid-heading">
-        <div>
-          <h2 id="grid-title">Planning grid</h2>
-          <p>{dataset.rows.length.toLocaleString()} rows · {dataset.columns.length} source columns</p>
-        </div>
-        <span className={`status-chip ${dataset.dirty ? 'attention' : 'neutral'}`}>
-          {dataset.dirty ? 'Unsaved edits' : 'No local edits'}
-        </span>
-      </div>
+    <section className="panel grid-panel" aria-label="Planning grid">
       <div className="grid-toolbar">
         <label className="search-control">
-          <span>Search rows</span>
+          <span className="sr-only">Search rows</span>
+          <Icon name="search" />
           <input
             type="search"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search all visible values"
+            placeholder={`Search ${dataset.rows.length.toLocaleString()} rows`}
           />
         </label>
-        <button className="button secondary" type="button" onClick={() => setShowColumns((value) => !value)} aria-expanded={showColumns}>
-          Columns ({dataset.columns.length - hiddenColumns.size}/{dataset.columns.length})
+        {dataset.dirty && <span className="status-chip attention">Unsaved edits</span>}
+        <button className="button secondary toolbar-button" type="button" title="Choose visible columns" onClick={() => setShowColumns((value) => !value)} aria-expanded={showColumns}>
+          <Icon name="columns" />Columns <span>{dataset.columns.length - hiddenColumns.size}/{dataset.columns.length}</span>
         </button>
         <div className="history-actions" aria-label="Cell edit history">
-          <button className="button secondary" type="button" onClick={undo} disabled={historyCounts.undo === 0}>Undo</button>
-          <button className="button secondary" type="button" onClick={redo} disabled={historyCounts.redo === 0}>Redo</button>
+          <button className="button secondary icon-action" type="button" aria-label="Undo cell edit" title="Undo" onClick={undo} disabled={historyCounts.undo === 0}><Icon name="undo" /></button>
+          <button className="button secondary icon-action" type="button" aria-label="Redo cell edit" title="Redo" onClick={redo} disabled={historyCounts.redo === 0}><Icon name="redo" /></button>
         </div>
       </div>
       {showColumns && (
@@ -194,7 +188,6 @@ export function PlanningGrid({ dataset, onChange }: PlanningGridProps) {
           defaultColDef={{ suppressHeaderMenuButton: false }}
         />
       </div>
-      <p className="grid-guidance">Edit cells directly. Use column menus to filter, headers to sort, and Tab or arrow keys to move.</p>
     </section>
   );
 }

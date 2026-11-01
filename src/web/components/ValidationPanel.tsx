@@ -7,23 +7,18 @@ export function ValidationPanel({ dataset }: { dataset: PlanningDataset }) {
   const review = dataset.rows.filter((row) => row.readiness === 'REVIEW_REQUIRED').length;
   const invalid = dataset.rows.filter((row) => row.readiness === 'INVALID').length;
   return (
-    <section className="panel validation-panel" aria-labelledby="validation-title">
+    <section className="panel validation-panel" aria-label="Data-quality issues">
       <div className="panel-heading">
-        <div>
-          <h2 id="validation-title">Data-quality issues</h2>
-          <p>Errors block affected rows from decision workflows. Warnings need review.</p>
-        </div>
+        <strong>{dataset.readiness === 'READY' ? 'Ready for decisions' : dataset.readiness === 'PARTIALLY_READY' ? 'Some rows need review' : 'Not ready for decisions'}</strong>
         <div className="issue-summary" aria-label="Validation issue counts">
           <span className="issue-count error">{counts.error} errors</span>
           <span className="issue-count warning">{counts.warning} warnings</span>
         </div>
       </div>
       <div className="readiness-summary" role="status">
-        <strong>{dataset.readiness === 'READY' ? 'Ready for decisions' : dataset.readiness === 'PARTIALLY_READY' ? 'Some rows need review' : 'Not ready for decisions'}</strong>
         <span>{ready} ready</span>
         <span>{review} review required</span>
         <span>{invalid} invalid</span>
-        {dataset.readiness !== 'READY' && <span>Only ready rows may enter future automatic decision processing.</span>}
       </div>
       {dataset.issues.length === 0 ? (
         <div className="validation-clear" role="status">No validation issues detected.</div>
