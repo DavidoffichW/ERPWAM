@@ -69,6 +69,7 @@ function boundedGreedy(candidates: PortfolioCandidate[], constraint: PortfolioCo
   });
   const selected: PortfolioCandidate[] = [];
   for (const candidate of ordered) {
+    if (candidate.value <= 0) continue;
     if (feasible([...selected, candidate], constraint)) selected.push(candidate);
   }
   return selected;

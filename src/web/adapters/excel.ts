@@ -102,6 +102,7 @@ function normalizePackagePath(name: string): string {
   }
   const directory = name.endsWith('/');
   const segments = name.split('/').filter((segment, index, all) => directory && index === all.length - 1 ? false : true);
+  // oxlint-disable-next-line no-control-regex -- ZIP member names must reject ASCII control bytes.
   if (segments.some((segment) => !segment || segment === '.' || segment === '..' || /[\u0000-\u001f]/.test(segment))) {
     throw new WorkbookImportError('Workbook package contains an unsafe member path.');
   }
@@ -806,6 +807,7 @@ function safeSpreadsheetCell(value: CellScalar, header = false): Cell {
 }
 
 function safeSheetName(sourceName: string, used: Set<string>): string {
+  // oxlint-disable-next-line no-control-regex -- worksheet names cannot contain ASCII control bytes.
   const cleaned = sourceName.replace(/[\\/*?:[\]]/g, ' ').replace(/[\u0000-\u001f]/g, ' ').trim().replace(/^'+|'+$/g, '') || 'Planning Data';
   let base = cleaned.slice(0, 31);
   let candidate = base;

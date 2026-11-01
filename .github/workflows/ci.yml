@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - erpwam-v0.1.1-qualification
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    name: ${{ matrix.os }} / Node.js 24.15
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24.15.0
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Verify dependency tree
+        run: npm ls --all
+      - name: Install Chromium and Linux browser libraries
+        if: runner.os == 'Linux'
+        run: npx playwright install --with-deps chromium
+      - name: Install Chromium
+        if: runner.os == 'Windows'
+        run: npx playwright install chromium
+      - name: Run static, domain, adapter, and build checks
+        run: npm run verify
+      - name: Run browser workflows
+        run: npm run test:browser
+      - name: Upload browser diagnostics
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: playwright-${{ runner.os }}
+          path: test-results/playwright/
+          if-no-files-found: ignore
+          retention-days: 7

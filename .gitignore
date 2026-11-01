@@ -24,12 +24,10 @@ node_modules/
 /ERP_Docs/
 /config/
 /references/
-/tests/
 /tools/
-/playwright.config.ts
-/vitest.config.ts
 /test-results/
 /playwright-report/
+/coverage/
 /.kaggle/
 
 # Generated caches, coverage, and temporary files.

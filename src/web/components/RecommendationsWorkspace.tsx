@@ -51,7 +51,7 @@ function rankingMatches(result: RankingResult | null, draft: DecisionDraft, data
   return Boolean(result && draft.context && draft.scope && draft.context.targetRowIds.length === 1 && draft.context.targetRowIds[0] === targetId && draft.context.datasetSnapshotRevision === dataset.snapshotRevision && result.contextId === draft.context.id && result.scopeRevision === draft.scope.revision && result.datasetSnapshotRevision === draft.context.datasetSnapshotRevision);
 }
 
-export function RecommendationsWorkspace({ dataset, workbook, workspaceId, state, draft, ensureEvidenceDataset, onDraft, onState }: Props) {
+export function RecommendationsWorkspace({ dataset, workbook, state, draft, ensureEvidenceDataset, onDraft, onState }: Props) {
   const [targetId, setTargetId] = useState(draft.context?.targetRowIds[0] ?? dataset.rows[0]?.id ?? '');
   const [effectiveDate] = useState(draft.context?.effectiveDate ?? new Date().toISOString().slice(0, 10));
   const [jobSearch, setJobSearch] = useState('');

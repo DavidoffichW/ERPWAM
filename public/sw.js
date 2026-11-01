@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'erp-static-v0.1.0-erpwam';
+const CACHE_VERSION = 'erp-static-v0.1.1-erpwam';
 const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './erpwam-mark.svg', './runtime-manifest.json'];
 
 async function primeAppShell() {
@@ -33,10 +33,23 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
+  if (request.mode === 'navigate') {
+    event.respondWith(fetch(request).then(async (response) => {
+      if (response.ok && response.type !== 'opaque') {
+        const cache = await caches.open(CACHE_VERSION);
+        await cache.put(new URL('./index.html', self.location.href).href, response.clone());
+      }
+      return response;
+    }).catch(async () => {
+      const cached = await caches.match(new URL('./index.html', self.location.href).href, { ignoreVary: true });
+      return cached ?? Response.error();
+    }));
+    return;
+  }
   event.respondWith(caches.match(request, { ignoreVary: true }).then((cached) => cached || fetch(request).then((response) => {
     if (!response.ok || response.type === 'opaque') return response;
     const copy = response.clone();
     event.waitUntil(caches.open(CACHE_VERSION).then((cache) => cache.put(request, copy)));
     return response;
-  }).catch(() => request.mode === 'navigate' ? caches.match('./index.html', { ignoreVary: true }) : undefined)));
+  }).catch(() => undefined)));
 });

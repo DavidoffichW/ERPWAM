@@ -1,49 +1,43 @@
 # ERPWAM
 
-> Plan job replacements and work portfolios from Excel.
+> A local planning workbench for job replacement, priority lists, and constrained work portfolios.
 
-ERPWAM is a local-first planning workbench for maintenance
-and operations teams. Import a schedule, inspect it in a spreadsheet-style
-view, compare possible replacements, and keep a record of the decision.
+ERPWAM helps maintenance and operations teams work through a planning decision without handing that decision to a scoring model. Import an Excel schedule, inspect and map its columns, compare possible replacements, then preserve the choice and its evidence.
 
-Your priority lists come first. Scoring and the example model offer another
-view of the data, but they never make the final choice for you.
+Priority Lists and direct human selection are first-class workflows. Eligibility checks, weighted scores, and the synthetic example model are advisory: they can explain and order candidates, but they do not remove the operator's authority to choose a loaded record.
 
-Despite the name, this is not a finance or accounting suite.
-
-**[Open the live application](https://davidoffichw.github.io/ERPWAM/)**
+**[Open ERPWAM](https://davidoffichw.github.io/ERPWAM/)**
 
 ![ERPWAM recommendations workbench with a ranked replacement selected](media/erpwam-recommendations-workflow.png)
 
-## What it does
+## What you can do
 
-- Import and export multi-sheet Excel workbooks
-- Edit, filter, sort, and map planning data without discarding source columns
-- Create and reuse ranked priority lists
-- Compare replacement candidates or choose one directly
-- Plan a portfolio around budget and resource limits
-- Save decisions and revisit earlier scenarios
-- Back up and restore browser-local plans
-- Continue working offline after the hosted app has cached its assets
+- Import, map, edit, and export multi-sheet `.xlsx` planning workbooks.
+- Preserve source columns and distinguish imported values from browser edits.
+- Create or import Priority Lists without renumbering their declared ranks.
+- Rank the same candidate population with a Priority List, transparent weights, or the synthetic demonstration model.
+- Select any legitimate loaded replacement directly, including records carrying advisory warnings.
+- Build a budget- and resource-constrained work portfolio.
+- Record decisions, feedback, outcomes, scenarios, and corrected evidence.
+- Keep multiple workspaces in browser-local storage and move them with a backup file.
 
-## Try it
+Despite the name, ERPWAM is not a finance suite, enterprise ERP backend, or automated decision system.
 
-The built-in maintenance and facilities plans use fictional data.
+## Try the workflow
+
+The built-in facilities and maintenance plans are fictional.
 
 1. Open **Facilities example** from **Planning Data**.
-2. Go to **Recommendations** and select the job to replace.
-3. Open **Priority lists** and create **Example priorities**.
-4. Choose **Example priorities** under **Rank by**, then apply the ranking.
-5. Pick a replacement and choose **Use this replacement**.
-6. Open **History** to review the saved decision.
+2. Choose **Recommendations**, then select the planned job to replace.
+3. Make a direct choice, or create **Example priorities** under **Priority lists** and apply that ranking.
+4. Select a replacement and choose **Use this replacement**.
+5. Open **History** to inspect the recorded decision and its evidence.
 
-You do not need to run a model to make a decision. Any loaded replacement can
-be selected manually, including records with incomplete data. Warnings remain
-visible instead of silently removing those choices.
+Warnings stay attached to the data. They do not silently turn into eligibility gates.
 
 ## Run locally
 
-You need Node.js 24.15 or newer and npm 11 or newer.
+Install Node.js 24.15 or newer and npm 11 or newer, then:
 
 ```bash
 git clone https://github.com/DavidoffichW/ERPWAM.git
@@ -52,78 +46,87 @@ npm ci
 npm run dev
 ```
 
-Open the local address printed by Vite. Press `Ctrl+C` to stop the development
-server.
+Open the local address printed by Vite. Press `Ctrl+C` to stop the server.
 
-Verify the project and preview a production build:
+To build and preview the static application:
 
 ```bash
-npm run verify
+npm run build
 npm run preview
 ```
 
-The static build is written to `dist/`. The built application does not need
-Node.js, Python, or a backend at runtime.
+The generated site is written to `dist/`. It needs no Python, application server, account service, or hosted database.
 
-## Working with data
+## Run the checks
 
-ERPWAM keeps the original workbook structure and records how imported columns map
-to planning roles. Source values, edits, mappings, rankings, and saved decisions
-remain distinguishable instead of being flattened into one opaque dataset.
+Install the Chromium browser used by the end-to-end suite once:
 
-Priority Lists preserve exact numeric ranks. Missing ranks stay unranked. The
-optional scoring methods are decision-support tools, not eligibility gates.
+```bash
+npx playwright install chromium
+```
 
-Portfolio planning uses exact subset enumeration for up to 20 candidates. For
-larger sets it switches to a deterministic heuristic and tells you that the
-result is not guaranteed to be optimal.
+On Linux, use `npx playwright install --with-deps chromium` when the browser libraries are not already installed.
 
-## Data and privacy
+```bash
+npm run lint
+npm run typecheck
+npm test
+npm run test:browser
+npm run build
+```
 
-All spreadsheet processing happens in the browser. There is no account system,
-backend database, telemetry, remote font, CDN dependency, or remote inference
-service.
+`npm run verify` runs linting, type checking, deterministic domain and adapter tests, and a production build. `npm run test:coverage` produces a local coverage report. GitHub Actions repeats the qualification on Windows and Ubuntu with Node.js 24.15; the manual Pages workflow runs the same qualification gate before deployment.
 
-Plans and decisions are stored in IndexedDB for the current browser profile.
-That storage is not encrypted, synchronized, or backed up automatically. Export
-a backup before clearing browser data, changing profiles, or moving to another
-device.
+## Planning data and Excel
 
-## Project structure
+An imported worksheet becomes a versioned planning dataset with stable row and column identities. Column mappings state which source fields act as job ID, priority, cost, duration, resource, date, and other planning roles. Unknown columns remain part of the dataset.
 
-- `src/contracts/` contains shared data and evidence contracts
-- `src/core/` contains deterministic planning logic with no React dependency
-- `src/web/` contains the interface, spreadsheet adapters, and browser storage
-- `public/` contains static assets and the offline service worker
+Each cell keeps its original value and provenance separately from its current value. An exported ERPWAM workbook includes identity metadata so a later import can distinguish an ordinary scalar edit from a structural change. Structural changes, unsupported formulas, hidden planning sheets, unsafe ZIP paths, and oversized packages are rejected instead of being guessed through. Imported formulas are never executed by ERPWAM.
 
-The separation keeps planning rules independently testable and prevents React
-state from becoming the source of domain truth.
+This is semantic round-trip support for the declared planning contract, not universal preservation of every Excel feature.
 
-ERPWAM uses TypeScript, React, Vite, AG Grid Community, `read-excel-file`,
-`write-excel-file`, and `fflate`. Exact dependency versions are recorded in
-`package-lock.json`; third-party license information is in
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+## Ranking and human choice
+
+Every ranking method must return the complete, unique candidate population admitted by the decision context. Missing inputs leave a candidate visibly unranked; they do not remove it. Priority List ranks are preserved exactly, including gaps.
+
+The weighted reference and synthetic linear model are explainable demonstrations. Their scores are not probabilities, policy decisions, or evidence of operational effectiveness. A human can select a loaded replacement without running either method.
+
+## Portfolio optimization
+
+For at most 20 candidates, ERPWAM enumerates every subset and reports global optimality under the stated objective, budget, and resource constraints. Larger populations use a deterministic bounded greedy heuristic. Approximate results are labeled as such and never claim a proven optimum. The heuristic does not add a non-positive-value job merely to fill spare capacity.
+
+## Decisions and evidence
+
+Decision contexts, candidate scopes, rankings, portfolios, and saved cases carry revision and checksum identities. A result tied to an older dataset snapshot cannot be silently reused after mappings, rows, or relevant values change. Human decisions are recorded as human events; no model result can overwrite them implicitly.
+
+Portable case files and full application backups include integrity metadata. Corrupted or incompatible records fail closed.
+
+## Browser storage and offline use
+
+Workspaces are saved in IndexedDB under the current browser profile. Existing v0.1.0 application state and historical **Enterprise Resource Planner** backup envelopes remain readable. Storage is not encrypted, synchronized, or backed up automatically, so export a backup before clearing site data or changing browsers.
+
+After a successful hosted load, the service worker keeps the application shell and fetched same-origin assets for later offline use. Online navigations prefer the current deployed shell, which avoids pinning a new deployment behind an old cached page. Offline mode can use only assets that were cached successfully; importing and exporting local workbooks still happens in the browser.
+
+## Structure
+
+- `src/contracts/` — data, decision, evidence, and persistence contracts
+- `src/core/` — deterministic planning logic with no React dependency
+- `src/web/` — React interface, Excel adapters, and IndexedDB persistence
+- `tests/unit/` — domain, revision, ranking, portfolio, evidence, and service-worker checks
+- `tests/integration/` — real workbook and IndexedDB adapter checks
+- `tests/browser/` — Chromium workflows through the public UI
+- `public/` — static assets, runtime manifest, and service worker
+
+Exact installed dependency versions are recorded in `package-lock.json`. Third-party notices are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## Limits
 
-ERPWAM is a decision-support tool. It does not provide organization-specific
-validation, policy enforcement, encrypted team storage, automatic sync, or a
-guarantee that a recommendation is operationally correct.
+ERPWAM does not provide organization-specific policy validation, encrypted team storage, remote collaboration, automatic synchronization, trained operational inference, or a guarantee that a recommendation is correct for a real facility. Use appropriate data controls and professional judgment before adopting a plan.
 
-Use your own data controls, validation rules, and professional judgment before
-adopting a plan in a real operating environment.
-
-## Deployment
-
-The production build can be served from any suitable static host over HTTP or
-HTTPS. Opening `dist/index.html` directly with `file://` is not supported.
-
-The repository includes a manual GitHub Pages workflow in
-`.github/workflows/deploy-pages.yml`. Set `ERPWAM_BASE_PATH` when deploying below
-a repository subpath.
+The hosted application uses the stable `/ERPWAM/` GitHub Pages path. The manual deployment workflow can also build for another repository subpath through `ERPWAM_BASE_PATH`.
 
 ## License
 
 [MIT](LICENSE) © DavidoffichW
 
-Release notes are available in [CHANGELOG.md](CHANGELOG.md).
+Release history is recorded in [CHANGELOG.md](CHANGELOG.md).

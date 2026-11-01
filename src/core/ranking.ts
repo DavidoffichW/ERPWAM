@@ -10,7 +10,6 @@ import type {
   RankingResult,
   RankingSourceIdentity,
   ScoreContribution,
-  SemanticRole,
 } from '../contracts';
 import { canonicalDigest } from './revision';
 import { semanticValue } from './decision';
@@ -38,6 +37,19 @@ function priorityNumber(value: unknown): number | null {
 
 function finiteNumber(value: unknown): number | null {
   return typeof value === 'number' && Number.isFinite(value) ? value : null;
+}
+
+function validateRankingScope(dataset: PlanningDataset, contextId: string, scope: CandidateScope): void {
+  const rowIds = new Set(dataset.rows.map((row) => row.id));
+  const candidates = scope.candidateRowIds;
+  if (
+    scope.datasetId !== dataset.id ||
+    scope.decisionContextId !== contextId ||
+    new Set(candidates).size !== candidates.length ||
+    candidates.some((rowId) => !rowIds.has(rowId))
+  ) {
+    throw new Error('Ranking requires a complete, unique candidate population from the selected dataset and decision context.');
+  }
 }
 
 export function compareNullableRanks(left: CandidateRank, right: CandidateRank, direction: 'asc' | 'desc' = 'asc'): number {
@@ -75,8 +87,15 @@ async function rankingResult(
   }
   const candidateRowIds = [...scope.candidateRowIds];
   const rankIds = ranks.map((rank) => rank.rowId);
-  if (rankIds.length !== candidateRowIds.length || rankIds.some((id) => !candidateRowIds.includes(id))) {
-    throw new Error('Ranking source did not preserve the eligible candidate population.');
+  const candidateSet = new Set(candidateRowIds);
+  const rankSet = new Set(rankIds);
+  if (
+    candidateSet.size !== candidateRowIds.length ||
+    rankSet.size !== rankIds.length ||
+    rankIds.length !== candidateRowIds.length ||
+    [...candidateSet].some((id) => !rankSet.has(id))
+  ) {
+    throw new Error('Ranking source did not preserve a complete, unique candidate population.');
   }
   if (ranks.some((rank) => rank.score !== null && !Number.isFinite(rank.score))) throw new Error('Ranking source produced a non-finite score.');
   const body = {
@@ -160,6 +179,7 @@ export async function rankByPriorityList(
   eligibility: EligibilityRun | null,
   list: PriorityListRevision,
 ): Promise<RankingResult> {
+  validateRankingScope(dataset, contextId, scope);
   if (!dataset.grainColumnId) throw new Error('Priority List matching requires a dataset grain.');
   const lookup = new Map(list.entries.filter((entry) => entry.status === 'VALID' && entry.priorityRank !== null).map((entry) => [entry.itemId, entry.priorityRank]));
   const ranks: CandidateRank[] = scope.candidateRowIds.map((rowId) => {
@@ -198,6 +218,7 @@ export async function rankByWeightedCriteria(
   scope: CandidateScope,
   eligibility: EligibilityRun | null,
 ): Promise<RankingResult> {
+  validateRankingScope(dataset, contextId, scope);
   const scored = scope.candidateRowIds.map((rowId) => {
     const priority = priorityNumber(semanticValue(dataset, rowId, 'priority'));
     const cost = finiteNumber(semanticValue(dataset, rowId, 'estimated_cost'));
@@ -233,6 +254,7 @@ export async function rankByDemonstrationModel(
   scope: CandidateScope,
   eligibility: EligibilityRun | null,
 ): Promise<RankingResult> {
+  validateRankingScope(dataset, contextId, scope);
   const c = DEMONSTRATION_MODEL_SPEC.coefficients;
   const scored = scope.candidateRowIds.map((rowId) => {
     const priority = priorityNumber(semanticValue(dataset, rowId, 'priority'));
