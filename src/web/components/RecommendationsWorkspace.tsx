@@ -67,6 +67,8 @@ export function RecommendationsWorkspace({ dataset, workbook, state, draft, ensu
   const [busy, setBusy] = useState(false);
   const listInput = useRef<HTMLInputElement>(null);
 
+  useEffect(() => { if (!notice) return; const timer = window.setTimeout(() => setNotice(''), 4000); return () => window.clearTimeout(timer); }, [notice]);
+
   const update = (changes: Partial<DecisionDraft>) => onDraft({ ...draft, ...changes, updatedAt: new Date().toISOString() });
   const activeResultCandidate = draft.rankings.find((item) => item.id === draft.activeRankingId) ?? null;
   const activeResult = rankingMatches(activeResultCandidate, draft, dataset, targetId) ? activeResultCandidate : null;
@@ -187,25 +189,18 @@ export function RecommendationsWorkspace({ dataset, workbook, state, draft, ensu
     : selectedRank?.rank !== null && selectedRank ? `Selected candidate: Priority ${selectedRank.rank}` : 'Selected candidate';
 
   return <section className="recommendations-workspace" aria-labelledby="recommendations-title">
-    <div className="page-header recommendation-heading">
-      <div>
-        <p className="eyebrow">Recommendations</p>
-        <h1 id="recommendations-title">Replace a job</h1>
-        <p>Choose the planned job, review the available replacements, and save your selection.</p>
-      </div>
-    </div>
+    <div className="page-header compact-page-header recommendation-heading"><h1 id="recommendations-title">Replace a job</h1></div>
     <section className="recommendation-toolbar panel" aria-label="Recommendation controls">
-      <label className="field-stack job-search">Job to replace
-        <input type="search" value={jobSearch} onChange={(event) => setJobSearch(event.target.value)} placeholder="Find by job ID or description" />
+      <label className="field-stack job-search"><span className="sr-only">Filter planned jobs</span>
+        <input type="search" aria-label="Filter planned jobs" value={jobSearch} onChange={(event) => setJobSearch(event.target.value)} placeholder="Find a planned job" />
       </label>
-      <label className="field-stack job-select">
-        <span className="sr-only">Selected job to replace</span>
+      <label className="field-stack job-select">Planned job
         <select aria-label="Selected job to replace" value={targetId} onChange={(event) => changeTarget(event.target.value)}>
           {filteredTargets.map((row) => <option key={row.id} value={row.id}>{rowLabel(dataset, row.id)}</option>)}
         </select>
       </label>
-      <label className="field-stack rank-select">Rank by
-        <select value={rankingChoice} onChange={(event) => setRankingChoice(event.target.value)}>
+      <label className="field-stack rank-select">Selection mode
+      <select aria-label="Rank by" value={rankingChoice} onChange={(event) => setRankingChoice(event.target.value)}>
           <option value="manual">Manual selection</option>
           {state.priorityLists.map((list) => <option key={list.revision} value={priorityChoice(list.revision)}>{priorityVersionLabel(list, state.priorityLists)}</option>)}
           <option value="reference">Weighted reference</option>
@@ -213,13 +208,12 @@ export function RecommendationsWorkspace({ dataset, workbook, state, draft, ensu
         </select>
       </label>
       <button className="button primary apply-ranking" type="button" disabled={busy || !targetId} onClick={() => void applyRanking()}>Apply ranking</button>
-      <span className="ranking-status"><span>Current ranking</span><strong>{sourceLabel}</strong></span>
     </section>
 
     <div className="recommendation-layout">
       <section className="panel candidate-panel" aria-labelledby="candidate-title">
         <div className="panel-heading">
-          <div><h2 id="candidate-title">Available replacements</h2><p>{rows.length} matching jobs · unranked jobs remain at the bottom</p></div>
+          <div><h2 id="candidate-title">Available replacements</h2><p>{sourceLabel} · {rows.length} options</p></div>
           <label className="compact-search"><span className="sr-only">Search candidates</span><input type="search" value={candidateSearch} onChange={(event) => setCandidateSearch(event.target.value)} placeholder="Search candidates" /></label>
         </div>
         <div className="candidate-table-wrap">
@@ -243,8 +237,8 @@ export function RecommendationsWorkspace({ dataset, workbook, state, draft, ensu
         </div>
       </section>
       <aside className="panel replacement-panel" aria-labelledby="replacement-title">
-        <p className="eyebrow">Selection</p>
-        <h2 id="replacement-title">{selectionTitle}</h2>
+        <h2 id="replacement-title">Replacement</h2>
+        {selectionTitle !== 'Selected candidate' && <p className="selection-rank">{selectionTitle}</p>}
         {selected && target ? <>
           <div className="comparison-block"><span>Replacing</span><strong>{rowIdentity(dataset, target.id)}</strong><small>{rowDescription(dataset, target.id)}</small></div>
           <div className="comparison-arrow" aria-hidden="true">↓</div>

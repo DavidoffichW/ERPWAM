@@ -1,8 +1,10 @@
 # ERPWAM
 
-> A local planning workbench for job replacement, priority lists, and constrained work portfolios.
+> Plan jobs, compare replacements, and keep the receipts. All in your browser.
 
-ERPWAM helps maintenance and operations teams work through a planning decision without handing that decision to a scoring model. Import an Excel schedule, inspect and map its columns, compare possible replacements, then preserve the choice and its evidence.
+Import an Excel schedule, map the columns, compare the options, and record what
+you chose. ERPWAM helps maintenance and operations teams work through a
+planning decision without handing that decision to a scoring model.
 
 Priority Lists and direct human selection are first-class workflows. Eligibility checks, weighted scores, and the synthetic example model are advisory: they can explain and order candidates, but they do not remove the operator's authority to choose a loaded record.
 
@@ -23,17 +25,19 @@ Priority Lists and direct human selection are first-class workflows. Eligibility
 
 Despite the name, ERPWAM is not a finance suite, enterprise ERP backend, or automated decision system.
 
-## Try the workflow
+## Try a decision
 
 The built-in facilities and maintenance plans are fictional.
 
-1. Open **Facilities example** from **Planning Data**.
+1. Open **Examples** in **Planning Data**, then choose **Facilities example**.
 2. Choose **Recommendations**, then select the planned job to replace.
 3. Make a direct choice, or create **Example priorities** under **Priority lists** and apply that ranking.
 4. Select a replacement and choose **Use this replacement**.
 5. Open **History** to inspect the recorded decision and its evidence.
 
 Warnings stay attached to the data. They do not silently turn into eligibility gates.
+
+The interface keeps the planning grid, candidate table, constraints, results, and decision history in the foreground. Column mappings, data issues, metric definitions, Priority Lists, and detailed evidence remain available when they are relevant without filling the everyday workspace.
 
 ## Run locally
 
@@ -85,7 +89,7 @@ Each cell keeps its original value and provenance separately from its current va
 
 This is semantic round-trip support for the declared planning contract, not universal preservation of every Excel feature.
 
-## Ranking and human choice
+## The operator still decides
 
 Every ranking method must return the complete, unique candidate population admitted by the decision context. Missing inputs leave a candidate visibly unranked; they do not remove it. Priority List ranks are preserved exactly, including gaps.
 
@@ -95,9 +99,13 @@ The weighted reference and synthetic linear model are explainable demonstrations
 
 For at most 20 candidates, ERPWAM enumerates every subset and reports global optimality under the stated objective, budget, and resource constraints. Larger populations use a deterministic bounded greedy heuristic. Approximate results are labeled as such and never claim a proven optimum. The heuristic does not add a non-positive-value job merely to fill spare capacity.
 
-## Decisions and evidence
+## Keep the receipts
 
-Decision contexts, candidate scopes, rankings, portfolios, and saved cases carry revision and checksum identities. A result tied to an older dataset snapshot cannot be silently reused after mappings, rows, or relevant values change. Human decisions are recorded as human events; no model result can overwrite them implicitly.
+Every saved decision keeps the context that produced it. Under the hood,
+candidate scopes, rankings, portfolios, and cases carry revision and checksum
+identities. A result tied to an older dataset snapshot cannot be silently
+reused after mappings, rows, or relevant values change. Human decisions are
+recorded as human events; no model result can overwrite them implicitly.
 
 Portable case files and full application backups include integrity metadata. Corrupted or incompatible records fail closed.
 

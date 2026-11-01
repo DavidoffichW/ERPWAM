@@ -30,12 +30,8 @@ export function MappingPanel({ dataset, onChange }: MappingPanelProps) {
   };
 
   return (
-    <section className="panel mapping-panel" aria-labelledby="mapping-title">
-      <div className="panel-heading">
-        <div>
-          <h2 id="mapping-title">Column mapping</h2>
-          <p>Match source columns to the fields ERPWAM uses. Original headers remain unchanged.</p>
-        </div>
+    <section className="panel mapping-panel" aria-label="Column mapping">
+      <div className="panel-heading mapping-heading">
         <div className="mapping-statuses">
           <span className={`status-chip ${dataset.mappingsConfirmed ? 'success' : 'attention'}`}>
             {dataset.mappingsConfirmed ? 'Mappings confirmed' : 'Confirmation required'}

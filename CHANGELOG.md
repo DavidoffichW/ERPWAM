@@ -1,6 +1,14 @@
 # Changelog
 
-## 0.1.1 (Unreleased)
+## 0.2.2 (Unreleased)
+
+- Replace the explanatory, panel-heavy interface with a compact task-oriented workspace.
+- Make the planning grid, replacement candidates, portfolio results, and saved decisions the dominant content in each view.
+- Move mappings, validation findings, Priority Lists, metric definitions, and technical evidence into contextual surfaces.
+- Add accessible icon controls, contextual help, keyboard-safe dialogs and disclosures, responsive layouts, and transient routine feedback.
+- Incorporate the qualified 0.1.1 reliability work listed below.
+
+## 0.1.1 (Qualified, not released)
 
 - Add independent domain, evidence, Excel, IndexedDB, browser, and offline qualification.
 - Reject incomplete or duplicated ranking populations before producing recommendation evidence.
@@ -8,6 +16,8 @@
 - Prefer the current online application shell while retaining a cached offline fallback.
 - Gate the manual Pages deployment behind the same application checks used by CI.
 - Document planning-data identity, advisory ranking, exact and approximate portfolio methods, browser persistence, and offline limits.
+
+This qualification was not tagged or published as a standalone release. There were no 0.2.0 or 0.2.1 releases.
 
 ## 0.1.0 (2026-10-27)
 

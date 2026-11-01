@@ -12,7 +12,13 @@ async function createWorkbookFixture(testInfo: TestInfo): Promise<string> {
 
 async function openEmptyApp(page: Page): Promise<void> {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'Start a planning workbook' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Open a planning workbook' })).toBeVisible();
+}
+
+async function loadFacilitiesExample(page: Page): Promise<void> {
+  await page.getByText('Examples', { exact: true }).click();
+  await page.getByRole('button', { name: 'Facilities example' }).click();
+  await expect(page.getByRole('heading', { name: 'Facilities example' })).toBeVisible();
 }
 
 test('imports, exports, reimports, and persists a planning workbook', async ({ page }, testInfo) => {
@@ -23,7 +29,7 @@ test('imports, exports, reimports, and persists a planning workbook', async ({ p
   await expect(page.locator('.app-notice')).toContainText('imported with 1 worksheet');
   await expect(page.getByLabel('Current plan').locator('option:checked')).toHaveText('planning-fixture');
   await expect(page.getByText('Facilities Plan', { exact: true }).first()).toBeVisible();
-  await expect(page.getByText('18 rows', { exact: true })).toBeVisible();
+  await expect(page.getByPlaceholder('Search 18 rows')).toBeVisible();
   const costCell = page.getByRole('gridcell', { name: '950', exact: true });
   await costCell.click();
   await costCell.press('Enter');
@@ -34,12 +40,11 @@ test('imports, exports, reimports, and persists a planning workbook', async ({ p
   await expect(page.getByText('Unsaved edits')).toBeVisible();
 
   const download = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Export workbook' }).click();
+  await page.getByRole('button', { name: 'Export', exact: true }).click();
   const exported = await download;
   const exportedPath = testInfo.outputPath('exported-round-trip.xlsx');
   await exported.saveAs(exportedPath);
   await expect(page.locator('.app-notice')).toContainText('Workbook exported');
-  await expect(page.getByText('Up to date')).toBeVisible();
   await expect(page.locator('.save-status')).toHaveText('Saved locally');
 
   await page.reload();
@@ -52,15 +57,14 @@ test('imports, exports, reimports, and persists a planning workbook', async ({ p
 
 test('keeps manual choice primary, records a ranked decision, and builds a feasible portfolio', async ({ page }) => {
   await openEmptyApp(page);
-  await page.getByRole('button', { name: 'Facilities example' }).click();
-  await expect(page.getByRole('heading', { name: 'Facilities example' })).toBeVisible();
+  await loadFacilitiesExample(page);
 
   await page.getByRole('button', { name: 'Recommendations' }).click();
   await expect(page.getByRole('heading', { name: 'Replace a job' })).toBeVisible();
   await page.getByLabel('Rank by').selectOption('manual');
   await page.getByRole('button', { name: 'Apply ranking' }).click();
   await expect(page.locator('.notice.success').filter({ hasText: 'Manual selection is ready' })).toBeVisible();
-  await expect(page.getByText('17 matching jobs')).toBeVisible();
+  await expect(page.getByText('Manual selection · 17 options')).toBeVisible();
 
   await page.locator('summary').filter({ hasText: 'Priority lists' }).click();
   await page.getByRole('button', { name: 'Create example priorities' }).click();
@@ -71,7 +75,7 @@ test('keeps manual choice primary, records a ranked decision, and builds a feasi
   await expect(page.locator('.notice.success').filter({ hasText: 'Replacement saved' })).toBeVisible();
 
   await page.getByRole('button', { name: 'History' }).click();
-  await expect(page.getByRole('heading', { name: 'Decisions and scenarios' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Decision history' })).toBeVisible();
   await expect(page.getByLabel('Saved item').locator('option')).toHaveCount(2);
 
   await page.getByRole('button', { name: 'Portfolio' }).click();
@@ -82,7 +86,7 @@ test('keeps manual choice primary, records a ranked decision, and builds a feasi
   }
   await page.getByRole('button', { name: 'Build portfolio' }).click();
   await expect(page.locator('.notice.success').filter({ hasText: /portfolio selected/i })).toBeVisible();
-  await expect(page.getByText('Exact', { exact: true })).toBeVisible();
+  await expect(page.getByText('Exact optimum', { exact: true })).toBeVisible();
 
   await page.getByRole('button', { name: 'History' }).click();
   await page.getByRole('textbox', { name: 'Name', exact: true }).fill('Browser qualification');
@@ -90,7 +94,7 @@ test('keeps manual choice primary, records a ranked decision, and builds a feasi
   await page.getByRole('button', { name: 'Save analysis' }).click();
   await expect(page.getByLabel('Saved item').locator('option')).toHaveCount(3);
 
-  await expect(page.getByText('Saved locally')).toBeVisible();
+  await expect(page.locator('.save-status')).toHaveText('Saved locally');
   await page.reload();
   await page.getByRole('button', { name: 'Recommendations' }).click();
   await expect(page.getByLabel('Rank by').locator('option', { hasText: 'Example priorities' })).toHaveCount(1);
@@ -101,7 +105,7 @@ test('keeps manual choice primary, records a ranked decision, and builds a feasi
 
 test('does not present a ranking from a stale dataset snapshot', async ({ page }) => {
   await openEmptyApp(page);
-  await page.getByRole('button', { name: 'Facilities example' }).click();
+  await loadFacilitiesExample(page);
   await page.getByRole('button', { name: 'Recommendations' }).click();
   await page.locator('summary').filter({ hasText: 'Priority lists' }).click();
   await page.getByRole('button', { name: 'Create example priorities' }).click();
@@ -116,13 +120,13 @@ test('does not present a ranking from a stale dataset snapshot', async ({ page }
   await editor.fill('975');
   await editor.press('Enter');
   await page.getByRole('button', { name: 'Recommendations' }).click();
-  await expect(page.getByText('Not applied', { exact: true })).toBeVisible();
+  await expect(page.getByText('Not applied · 17 options', { exact: true })).toBeVisible();
 });
 
 test('exports and restores complete browser-local state', async ({ page }, testInfo) => {
   await openEmptyApp(page);
-  await page.getByRole('button', { name: 'Facilities example' }).click();
-  await expect(page.getByText('Saved locally')).toBeVisible();
+  await loadFacilitiesExample(page);
+  await expect(page.locator('.save-status')).toHaveText('Saved locally');
 
   await page.getByLabel('Open data and settings menu').click();
   const download = page.waitForEvent('download');
@@ -133,7 +137,7 @@ test('exports and restores complete browser-local state', async ({ page }, testI
 
   page.once('dialog', (dialog) => dialog.accept());
   await page.getByRole('button', { name: 'Delete all local data' }).click();
-  await expect(page.getByRole('heading', { name: 'Start a planning workbook' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Open a planning workbook' })).toBeVisible();
 
   await page.getByLabel('Open data and settings menu').click();
   await page.locator('input[type="file"][accept*="json"]').setInputFiles(backupPath);
@@ -164,7 +168,7 @@ test('shows controlled workbook and browser-storage failures', async ({ browser 
 
 test('installs the service worker and reloads the cached application shell offline', async ({ page, context }) => {
   await openEmptyApp(page);
-  await page.getByRole('button', { name: 'Facilities example' }).click();
+  await loadFacilitiesExample(page);
   await expect(page.locator('.save-status')).toHaveText('Saved locally');
   await page.evaluate(async () => {
     await navigator.serviceWorker.ready;
@@ -182,4 +186,55 @@ test('installs the service worker and reloads the cached application shell offli
   await page.getByRole('button', { name: 'Recommendations' }).click();
   await expect(page.getByRole('heading', { name: 'Replace a job' })).toBeVisible();
   await context.setOffline(false);
+});
+
+test('keeps the compact workspace responsive, keyboard-accessible, and clearly labelled', async ({ page }, testInfo) => {
+  await openEmptyApp(page);
+
+  const helpButton = page.getByRole('button', { name: 'Open help' });
+  await helpButton.click();
+  await expect(page.getByRole('dialog', { name: 'Planning help' })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog', { name: 'Planning help' })).toBeHidden();
+  await expect(helpButton).toBeFocused();
+
+  await loadFacilitiesExample(page);
+  await expect(page.getByRole('button', { name: 'Undo cell edit' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Redo cell edit' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Switch to light theme' })).toBeVisible();
+
+  const mappingSummary = page.locator('summary').filter({ hasText: 'Column mapping' });
+  await expect(mappingSummary).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(mappingSummary).toBeFocused();
+  await expect(mappingSummary.locator('xpath=..')).not.toHaveAttribute('open', '');
+  const issuesSummary = page.locator('summary').filter({ hasText: 'Data issues' });
+  await issuesSummary.click();
+  await expect(page.getByLabel('Data-quality issues')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(issuesSummary).toBeFocused();
+
+  const settings = page.getByLabel('Open data and settings menu');
+  await settings.click();
+  await expect(page.getByRole('button', { name: 'Export local backup' })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('button', { name: 'Export local backup' })).toBeHidden();
+  await expect(settings).toBeFocused();
+
+  const themeButton = page.getByRole('button', { name: 'Switch to light theme' });
+  await themeButton.click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.getByRole('button', { name: 'Switch to dark theme' })).toBeVisible();
+
+  for (const [view, heading] of [['Recommendations', 'Replace a job'], ['Portfolio', 'Portfolio'], ['History', 'Decision history'], ['Overview', 'Overview']] as const) {
+    await page.getByRole('button', { name: view }).click();
+    await expect(page.getByRole('heading', { name: heading })).toBeVisible();
+  }
+
+  for (const viewport of [{ width: 1440, height: 900 }, { width: 1280, height: 720 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    await page.screenshot({ path: testInfo.outputPath(`overview-${viewport.width}x${viewport.height}.png`), fullPage: true });
+    await expect(page.getByRole('heading', { name: 'Overview' })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
+  }
 });
