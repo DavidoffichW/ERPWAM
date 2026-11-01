@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0",
   "application": "ERPWAM",
-  "applicationVersion": "0.1.1",
+  "applicationVersion": "0.2.2",
   "distributionMode": "static-browser",
   "networkRequiredForNormalOperation": false,
   "modelAssets": [

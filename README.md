@@ -27,13 +27,15 @@ Despite the name, ERPWAM is not a finance suite, enterprise ERP backend, or auto
 
 The built-in facilities and maintenance plans are fictional.
 
-1. Open **Facilities example** from **Planning Data**.
+1. Open **Examples** in **Planning Data**, then choose **Facilities example**.
 2. Choose **Recommendations**, then select the planned job to replace.
 3. Make a direct choice, or create **Example priorities** under **Priority lists** and apply that ranking.
 4. Select a replacement and choose **Use this replacement**.
 5. Open **History** to inspect the recorded decision and its evidence.
 
 Warnings stay attached to the data. They do not silently turn into eligibility gates.
+
+The interface keeps the planning grid, candidate table, constraints, results, and decision history in the foreground. Column mappings, data issues, metric definitions, Priority Lists, and detailed evidence remain available when they are relevant without filling the everyday workspace.
 
 ## Run locally
 
