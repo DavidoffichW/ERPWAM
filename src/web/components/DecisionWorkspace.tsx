@@ -62,7 +62,7 @@ function eligibleIds(draft: DecisionDraft): string[] {
   return draft.eligibility?.evaluations.filter((evaluation) => evaluation.state === 'ELIGIBLE').map((evaluation) => evaluation.rowId) ?? [];
 }
 
-export function DecisionWorkspace({ view, dataset, workspaceId, state, draft, ensureEvidenceDataset, onDraft, onState }: Props) {
+export function DecisionWorkspace({ view, dataset, state, draft, ensureEvidenceDataset, onDraft, onState }: Props) {
   const [objective, setObjective] = useState<DecisionObjective>(draft.context?.objective ?? 'JOB_REPLACEMENT');
   const [targetIds, setTargetIds] = useState<string[]>(draft.context?.targetRowIds ?? []);
   const [effectiveDate, setEffectiveDate] = useState(draft.context?.effectiveDate ?? new Date().toISOString().slice(0, 10));
