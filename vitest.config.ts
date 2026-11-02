@@ -3,12 +3,11 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     environment: 'node',
-    include: ['tests/unit/**/*.test.ts', 'tests/integration/**/*.test.ts'],
+    include: ['tests/**/*.test.ts'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json-summary'],
-      include: ['src/core/**/*.ts', 'src/web/adapters/**/*.ts'],
-      exclude: ['src/core/index.ts'],
+      include: ['src/analytics/**/*.ts', 'src/data/**/*.ts', 'src/domain/**/*.ts', 'src/forecast/**/*.ts', 'src/persistence/**/*.ts', 'src/scenarios/**/*.ts'],
     },
   },
 });

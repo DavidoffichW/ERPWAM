@@ -27,6 +27,8 @@ node_modules/
 /tools/
 /test-results/
 /playwright-report/
+/.playwright-cli/
+/output/playwright/
 /coverage/
 /.kaggle/
 

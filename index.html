@@ -4,23 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark light" />
-    <meta name="theme-color" content="#07101f" />
+    <meta name="theme-color" content="#17243a" />
     <meta
       name="description"
-      content="ERPWAM: local operational planning and decision evidence."
+      content="ERPWAM: local asset and resource intelligence, forecasting, and scenario analysis."
     />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./erpwam-mark.svg" type="image/svg+xml" />
     <script>
       (() => {
-        const saved = localStorage.getItem('erp-theme');
-        document.documentElement.dataset.theme = saved === 'light' ? 'light' : 'dark';
+        const saved = localStorage.getItem('erpwam-analytics-theme');
+        document.documentElement.dataset.theme = saved === 'dark' ? 'dark' : 'light';
       })();
     </script>
     <title>ERPWAM</title>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/web/main.tsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

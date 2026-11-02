@@ -1,4 +1,6 @@
-# ERPWAM v0.2.2
+# Historical draft — ERPWAM v0.2.2
+
+These notes describe qualified planning-interface work that was not published as a tagged release. They are retained for repository history and are not release notes for the analytical redesign.
 
 ERPWAM now presents its planning tools as a compact operational workspace. The planning grid, replacement candidates, portfolio constraints and results, and decision history take priority; mappings, validation findings, Priority Lists, metric definitions, and detailed evidence remain available when needed.
 

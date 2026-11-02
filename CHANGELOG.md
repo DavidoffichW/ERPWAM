@@ -1,6 +1,15 @@
 # Changelog
 
-## 0.2.2 (Unreleased)
+## Analytical redesign (development branch)
+
+- Replace the planning-specific product domain with asset and resource analytics.
+- Add a deterministic fictional asset corpus, statistical exploration, transparent forecast baselines, rolling-origin backtests, and isolated scenarios.
+- Add versioned analytical project storage and integrity-checked portable exports in a new browser database namespace.
+- Keep the prior planning application's storage and backup formats untouched; no automatic reinterpretation or migration is performed.
+
+The release version and any supported migration policy remain subject to compatibility review. The entries below preserve the public application's historical record.
+
+## 0.2.2 (Qualified interface work, not released)
 
 - Replace the explanatory, panel-heavy interface with a compact task-oriented workspace.
 - Make the planning grid, replacement candidates, portfolio results, and saved decisions the dominant content in each view.
