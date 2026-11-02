@@ -30,10 +30,10 @@ export function ScenariosPage({ project, onProjectChange, onOpenForecasts }: Sce
     }
   }
 
-  if (!baseline) return <div className="workspace-page" data-testid="scenarios-page"><header className="page-heading"><div><span className="eyebrow">Scenarios</span><h1>Explore explicit assumptions</h1><p>A scenario requires a fixed forecast baseline.</p></div></header><section className="empty-state"><h2>Create a baseline first</h2><p>Run a transparent forecast before applying a hypothetical assumption.</p><button type="button" className="primary-button" onClick={onOpenForecasts}>Open forecasts</button></section></div>;
+  if (!baseline) return <div className="workspace-page" data-testid="scenarios-page"><header className="page-heading"><div><h1>Scenarios</h1></div></header><section className="empty-state"><h2>Create a baseline first</h2><p>Run a transparent forecast before applying a hypothetical assumption.</p><button type="button" className="primary-button" onClick={onOpenForecasts}>Open forecasts</button></section></div>;
 
   const option = {
-    color: ['#7157a8', '#b76f21'],
+    color: ['#437c85', '#ba824e'],
     tooltip: { trigger: 'axis' },
     legend: { top: 0 },
     grid: { left: 64, right: 20, top: 42, bottom: 48 },
@@ -45,11 +45,10 @@ export function ScenariosPage({ project, onProjectChange, onOpenForecasts }: Sce
     ],
   };
   return <div className="workspace-page" data-testid="scenarios-page">
-    <header className="page-heading"><div><span className="eyebrow">Scenarios</span><h1>Compare a hypothetical future</h1><p>The scenario preserves the forecast and observed history. It does not claim the assumption will occur.</p></div><span className="scenario-badge">Hypothetical</span></header>
+    <header className="page-heading"><div><h1>Scenario comparison</h1></div><span className="scenario-badge">Hypothetical</span></header>
     <section className="context-bar" aria-label="Scenario configuration">
-      <div className="context-note"><strong>Capacity multiplier</strong><br />Assumes forecast output changes in direct proportion to declared capacity.</div>
-      <label>Multiplier<input type="number" min="0" max="2" step="0.05" value={value} onChange={(event) => setValue(event.target.valueAsNumber)} /></label>
-      <div className="context-note">Effective {baseline.forecast[0]!.time} · baseline {baseline.id}</div>
+      <label title="Assumes forecast output varies in direct proportion to capacity">Capacity multiplier<input type="number" min="0" max="2" step="0.05" value={value} onChange={(event) => setValue(event.target.valueAsNumber)} /></label>
+      <div className="context-note">Effective {baseline.forecast[0]!.time.slice(0, 10)}</div>
       <button type="button" className="primary-button" disabled={working || !Number.isFinite(value) || value < 0 || value > 2} onClick={execute}>{working ? 'Calculating…' : 'Apply scenario'}</button>
     </section>
     {error && <div className="error-banner" role="alert">{error}</div>}

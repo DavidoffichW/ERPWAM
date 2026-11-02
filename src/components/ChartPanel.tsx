@@ -56,8 +56,8 @@ export function ChartPanel({
     chart.current = instance;
     instance.setOption({
       animationDuration: 180,
-      aria: { enabled: true, decal: { show: true } },
-      textStyle: { fontFamily: 'Inter, Segoe UI, system-ui, sans-serif' },
+      aria: { enabled: true, decal: { show: false } },
+      textStyle: { fontFamily: 'Inter, Segoe UI, system-ui, sans-serif', color: getComputedStyle(container.current!).getPropertyValue('--muted').trim() || '#5f6b7a' },
       ...option,
     });
     instance.on('click', (event) => {
@@ -97,17 +97,15 @@ export function ChartPanel({
     <section className="panel chart-panel" aria-labelledby={`${title.replaceAll(' ', '-')}-title`}>
       <div className="panel-heading">
         <div>
-          <h2 id={`${title.replaceAll(' ', '-')}-title`}>{title}</h2>
-          <p>{description}</p>
+          <h2 id={`${title.replaceAll(' ', '-')}-title`} title={description}>{title}</h2>
         </div>
-        {selectedId && <span className="selection-chip">Selected: {selectedId}</span>}
       </div>
       <div
         ref={container}
         className="chart"
         role="img"
         tabIndex={keyboardItems.length ? 0 : -1}
-        aria-label={`${title}. ${description}${keyboardItems.length ? ' Use arrow keys to move through selectable values and Enter to select.' : ''}`}
+        aria-label={`${title}. ${description}${selectedId ? ` Selected: ${selectedId}.` : ''}${keyboardItems.length ? ' Use arrow keys to move through selectable values and Enter to select.' : ''}`}
         onKeyDown={handleKeyDown}
       />
     </section>
