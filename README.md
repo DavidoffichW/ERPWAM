@@ -6,7 +6,7 @@ Import an Excel schedule, map the columns, compare the options, and record what
 you chose. ERPWAM helps maintenance and operations teams work through a
 planning decision without handing that decision to a scoring model.
 
-Priority Lists and direct human selection are first-class workflows. Eligibility checks, weighted scores, and the synthetic example model are advisory: they can explain and order candidates, but they do not remove the operator's authority to choose a loaded record.
+Priority Lists and direct human selection are first-class workflows. Eligibility checks, weighted scores, and the synthetic example model are advisory: they can explain and order candidates, but the operator can still choose any imported replacement the planning contract allows.
 
 **[Open ERPWAM](https://davidoffichw.github.io/ERPWAM/)**
 
@@ -91,9 +91,9 @@ This is semantic round-trip support for the declared planning contract, not univ
 
 ## The operator still decides
 
-Every ranking method must return the complete, unique candidate population admitted by the decision context. Missing inputs leave a candidate visibly unranked; they do not remove it. Priority List ranks are preserved exactly, including gaps.
+Every ranking method must return each candidate in the current decision scope exactly once. Missing ranking inputs leave a candidate visibly unranked; they do not remove it. Priority List ranks are preserved exactly, including gaps.
 
-The weighted reference and synthetic linear model are explainable demonstrations. Their scores are not probabilities, policy decisions, or evidence of operational effectiveness. A human can select a loaded replacement without running either method.
+The weighted reference and synthetic linear model are explainable examples, not trained or calibrated predictors. Their scores can order candidates; they are not probabilities, policy decisions, or evidence of operational effectiveness. You can select an allowed imported replacement without running either method.
 
 ## Portfolio optimization
 
