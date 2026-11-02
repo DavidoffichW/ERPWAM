@@ -64,7 +64,7 @@ export function ForecastsPage({ project, selectedAssetId, onSelectAsset, onProje
     ? null
     : item.upper80 - item.lower80) ?? [];
   const chartOption = {
-    color: ['#2367a8', '#7157a8'],
+    color: ['#923f59', '#437c85'],
     tooltip: { trigger: 'axis' },
     legend: { top: 0, data: ['Observed', 'Forecast', '80% empirical band'] },
     grid: { left: 64, right: 20, top: 42, bottom: 48 },
@@ -101,7 +101,7 @@ export function ForecastsPage({ project, selectedAssetId, onSelectAsset, onProje
         stack: 'empirical-band',
         symbol: 'none',
         lineStyle: { opacity: 0 },
-        areaStyle: { color: 'rgba(113, 87, 168, 0.28)' },
+        areaStyle: { color: 'rgba(67, 124, 133, 0.22)' },
         tooltip: { show: false },
         data: [...recent.map(() => null), ...intervalWidth],
       },
@@ -110,11 +110,11 @@ export function ForecastsPage({ project, selectedAssetId, onSelectAsset, onProje
 
   return (
     <div className="workspace-page" data-testid="forecasts-page">
-      <header className="page-heading"><div><span className="eyebrow">Forecasts</span><h1>Transparent output baselines</h1><p>Every held-out prediction uses only observations available at its forecast origin.</p></div><span className="fictional-badge">Fictional dataset</span></header>
+      <header className="page-heading"><div><h1>Output forecasts</h1></div></header>
       <section className="context-bar" aria-label="Forecast configuration">
         <label>Asset<select value={assetId} onChange={(event) => onSelectAsset(event.target.value)}>{project.dataset.assets.map((asset) => <option key={asset.id} value={asset.id}>{asset.code} — {asset.name}</option>)}</select></label>
         <label>Method<select value={method} onChange={(event) => setMethod(event.target.value as ForecastMethod)}>{Object.entries(methodNames).map(([id, name]) => <option key={id} value={id}>{name}</option>)}</select></label>
-        <div className="context-note">{series.length} daily positions · {missingCount} missing · 14-day horizon · 120-day initial window · 14-day step</div>
+        <div className="context-note">14-day horizon · {missingCount} missing observations</div>
         <button type="button" className="primary-button" onClick={execute} disabled={running}>{running ? 'Running…' : 'Run backtest'}</button>
       </section>
       {error && <div className="error-banner" role="alert">{error}</div>}
@@ -130,12 +130,12 @@ function formatMetric(value: number | null): string {
 function ForecastEvidence({ run, chartOption }: { run: ForecastRun; chartOption: EChartsCoreOption }) {
   return <>
     <section className="metric-grid forecast-metrics" aria-label="Forecast evidence">
-      <article className="metric-card"><span>MAE</span><strong>{formatMetric(run.metrics.mae)} u</strong><small>Mean absolute held-out error</small></article>
-      <article className="metric-card"><span>RMSE</span><strong>{formatMetric(run.metrics.rmse)} u</strong><small>Root mean squared held-out error</small></article>
-      <article className="metric-card"><span>MASE</span><strong>{formatMetric(run.metrics.mase)}</strong><small>Scaled against each fold's naive change</small></article>
-      <article className="metric-card"><span>Bias</span><strong>{formatMetric(run.metrics.bias)} u</strong><small>Mean actual minus predicted error</small></article>
-      <article className="metric-card"><span>Evidence</span><strong>{run.metrics.sampleCount}</strong><small>{run.metrics.foldCount} admitted folds · {run.excludedFolds.length} excluded</small></article>
-      <article className="metric-card"><span>Empirical interval check</span><strong>{run.metrics.intervalCoverage80 === null ? 'Unavailable' : `${(run.metrics.intervalCoverage80 * 100).toFixed(1)}%`}</strong><small>{run.metrics.intervalSampleCount} sequential held-out intervals · mean width {formatMetric(run.metrics.intervalMeanWidth80)} u</small></article>
+      <article className="metric-card" title="Mean absolute held-out error"><span>MAE</span><strong>{formatMetric(run.metrics.mae)} u</strong><small>Mean absolute held-out error</small></article>
+      <article className="metric-card" title="Root mean squared held-out error"><span>RMSE</span><strong>{formatMetric(run.metrics.rmse)} u</strong><small>Root mean squared held-out error</small></article>
+      <article className="metric-card" title="Scaled against naive changes"><span>MASE</span><strong>{formatMetric(run.metrics.mase)}</strong><small>Scaled against each fold's naive change</small></article>
+      <article className="metric-card" title="Mean actual minus predicted error"><span>Bias</span><strong>{formatMetric(run.metrics.bias)} u</strong><small>Mean actual minus predicted error</small></article>
+      <article className="metric-card" title="Admitted samples and folds"><span>Evidence</span><strong>{run.metrics.sampleCount}</strong><small>{run.metrics.foldCount} admitted folds · {run.excludedFolds.length} excluded</small></article>
+      <article className="metric-card" title="Coverage over held-out intervals"><span>Empirical interval check</span><strong>{run.metrics.intervalCoverage80 === null ? 'Unavailable' : `${(run.metrics.intervalCoverage80 * 100).toFixed(1)}%`}</strong><small>{run.metrics.intervalSampleCount} sequential held-out intervals · mean width {formatMetric(run.metrics.intervalMeanWidth80)} u</small></article>
     </section>
     <ChartPanel title="Observed history and forecast" description="Solid values are observations; dashed values are forecasts. Empirical intervals are reported in the table when supported." option={chartOption} />
     <section className="panel"><div className="panel-heading"><div><h2>Forecast output</h2><p>The interval is an empirical held-out residual band, not a guaranteed predictive probability.</p></div></div><div className="table-scroll"><table className="data-table"><thead><tr><th>Date</th><th>Layer</th><th>Point</th><th>80% empirical lower</th><th>80% empirical upper</th></tr></thead><tbody>{run.forecast.map((point) => <tr key={point.time}><td>{point.time}</td><td>{point.layer}</td><td>{point.value.toFixed(2)} {point.unit}</td><td>{point.lower80?.toFixed(2) ?? 'Unavailable'}</td><td>{point.upper80?.toFixed(2) ?? 'Unavailable'}</td></tr>)}</tbody></table></div></section>

@@ -6,7 +6,7 @@ interface MetricCardProps {
 
 export function MetricCard({ label, value, detail }: MetricCardProps) {
   return (
-    <article className="metric-card">
+    <article className="metric-card" title={detail}>
       <span>{label}</span>
       <strong>{value}</strong>
       <small>{detail}</small>

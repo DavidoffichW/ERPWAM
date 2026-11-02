@@ -139,7 +139,7 @@ export async function createJuniperDataset(): Promise<DatasetRevision> {
   return {
     schema: 'erpwam.analytics.dataset/1',
     revisionId: `juniper-${contentHash.slice(0, 16)}`,
-    title: 'Fictional Juniper Works',
+    title: 'Juniper Works',
     fictional: true,
     timezone: 'UTC',
     startDate: dateAt(0),
@@ -152,7 +152,7 @@ export async function createJuniperDataset(): Promise<DatasetRevision> {
     provenance: [{
       id: 'provenance-juniper-v1',
       sourceKind: 'SYNTHETIC_GENERATOR',
-      sourceName: 'Fictional Juniper Works generator',
+      sourceName: 'Juniper Works generator',
       sourceHash: contentHash,
       generatedAt: GENERATED_AT,
       generatorVersion: '1',

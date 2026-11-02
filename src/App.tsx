@@ -25,6 +25,19 @@ const routes: { id: Route; label: string }[] = [
   { id: 'settings', label: 'Settings' },
 ];
 
+function NavIcon({ route }: { route: Route }) {
+  const paths: Record<Route, ReactNode> = {
+    overview: <><rect x="3" y="3" width="8" height="8" rx="1.5" /><rect x="13" y="3" width="8" height="5" rx="1.5" /><rect x="13" y="10" width="8" height="11" rx="1.5" /><rect x="3" y="13" width="8" height="8" rx="1.5" /></>,
+    assets: <><rect x="3" y="7" width="18" height="14" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18" /></>,
+    analytics: <path d="M4 20V12M10 20V7M16 20V10M22 20V4M2 21h20" />,
+    forecasts: <path d="m3 17 6-6 4 4 8-9M15 6h6v6" />,
+    scenarios: <><circle cx="6" cy="5" r="2" /><circle cx="18" cy="8" r="2" /><circle cx="18" cy="19" r="2" /><path d="M6 7v9a3 3 0 0 0 3 3h7M6 7v1a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4" /></>,
+    data: <><ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5M3 12c0 1.7 4 3 9 3s9-1.3 9-3" /></>,
+    settings: <><circle cx="12" cy="12" r="3" /><path d="M10 2h4l.7 3 2 .9 2.6-1.5 2.3 3.5-2.2 2 .1 2.2 2.1 2-2.2 3.5-2.6-1.5-2 .9-.8 3h-4l-.7-3-2-.9-2.6 1.5-2.2-3.5 2.1-2-.1-2.2-2.1-2 2.2-3.5 2.6 1.5 2-.9z" /></>,
+  };
+  return <svg aria-hidden="true" className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{paths[route]}</svg>;
+}
+
 interface AppState {
   project: AnalyticalProject | null;
   saved: { id: string; title: string; updatedAt: string }[];
@@ -47,6 +60,12 @@ export function App() {
     localStorage.setItem('erpwam-analytics-theme', theme);
   }, [theme]);
 
+  useEffect(() => {
+    if (!state.notice) return;
+    const timeout = window.setTimeout(() => setState((current) => current.notice === state.notice ? { ...current, notice: null } : current), 4000);
+    return () => window.clearTimeout(timeout);
+  }, [state.notice]);
+
   async function refreshSaved() {
     try {
       const saved = await listProjects();
@@ -60,9 +79,9 @@ export function App() {
     setState((current) => ({ ...current, loading: true, error: null }));
     try {
       const project = await createJuniperProject();
-      setState((current) => ({ ...current, project, loading: false, dirty: true, notice: 'Fictional Juniper Works dataset loaded.' }));
+      setState((current) => ({ ...current, project, loading: false, dirty: true, notice: null }));
     } catch (reason) {
-      setState((current) => ({ ...current, loading: false, error: reason instanceof Error ? reason.message : 'Unable to create the fictional dataset.' }));
+      setState((current) => ({ ...current, loading: false, error: reason instanceof Error ? reason.message : 'Unable to open the example workspace.' }));
     }
   }
 
@@ -153,21 +172,20 @@ export function App() {
   }
 
   if (!state.project) {
-    return <ErrorBoundary><LandingPage loading={state.loading} savedProjects={state.saved} onExplore={explore} onOpen={openSaved} onImport={importProject} />{state.error && <div className="global-message error-banner" role="alert">{state.error}</div>}{state.notice && <div className="global-message notice-banner" role="status">{state.notice}</div>}</ErrorBoundary>;
+    return <ErrorBoundary><LandingPage loading={state.loading} savedProjects={state.saved} onExplore={explore} onOpen={openSaved} onImport={importProject} />{state.error && <div className="global-message error-banner" role="alert">{state.error}</div>}{state.notice && <div className="global-message toast-message" role="status">{state.notice}</div>}</ErrorBoundary>;
   }
 
   const project = state.project;
   const route = project.view.route;
   return <ErrorBoundary><div className="app-shell">
     <aside className="sidebar">
-      <button type="button" className="brand sidebar-brand" onClick={() => setState((current) => ({ ...current, project: null }))}><span className="brand-mark">E</span><span>ERPWAM</span></button>
-      <nav aria-label="Workspace">{routes.map((item) => <button type="button" key={item.id} className={route === item.id ? 'nav-item active' : 'nav-item'} aria-current={route === item.id ? 'page' : undefined} onClick={() => navigate(item.id)}>{item.label}</button>)}</nav>
-      <div className="sidebar-footer"><span className="fictional-badge">Fictional data</span><small>Analytical project schema 1</small></div>
+      <button type="button" className="brand sidebar-brand" onClick={() => setState((current) => ({ ...current, project: null }))}>ERPWAM</button>
+      <nav aria-label="Workspace">{routes.map((item) => <button type="button" key={item.id} className={route === item.id ? 'nav-item active' : 'nav-item'} aria-current={route === item.id ? 'page' : undefined} onClick={() => navigate(item.id)}><NavIcon route={item.id} /><span>{item.label}</span></button>)}</nav>
     </aside>
     <div className="app-main">
-      <header className="app-toolbar"><div><strong>{project.title}</strong>{state.dirty && <span className="unsaved-indicator">Unsaved changes</span>}</div><div className="toolbar-actions"><button type="button" className="secondary-button" onClick={persist}>Save</button><button type="button" className="secondary-button" onClick={exportProject}>Export</button></div></header>
+      <header className="app-toolbar"><div><strong>{project.title}</strong>{state.dirty && <span className="unsaved-indicator" title="Workspace changes not saved">Unsaved</span>}</div><div className="toolbar-actions"><button type="button" className="secondary-button" onClick={persist}>Save</button><button type="button" className="secondary-button" onClick={exportProject}>Export</button></div></header>
       {state.error && <div className="error-banner" role="alert">{state.error}</div>}
-      {state.notice && <div className="notice-banner" role="status">{state.notice}</div>}
+      {state.notice && <div className="toast-message" role="status">{state.notice}</div>}
       <main><Suspense fallback={<div className="workspace-loading" role="status">Loading workspace…</div>}>
         {route === 'overview' && <OverviewPage project={project} selectedAssetId={project.view.selectedAssetId} classFilter={project.view.classFilter} locationFilter={project.view.locationFilter} onClassFilter={(value) => updateFilter('classFilter', value)} onLocationFilter={(value) => updateFilter('locationFilter', value)} onSelectAsset={selectAsset} onOpenAsset={openAsset} />}
         {route === 'assets' && <AssetsPage project={project} selectedAssetId={project.view.selectedAssetId} onSelectAsset={selectAsset} />}

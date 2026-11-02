@@ -10,10 +10,11 @@ test('completes the analytical first-use workflow and reopens the saved project'
   page.on('pageerror', (error) => pageErrors.push(error.message));
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Understand how assets and resources perform over time.' })).toBeVisible();
-  await page.getByRole('button', { name: 'Explore fictional dataset' }).click();
+  await page.getByRole('button', { name: 'Open example workspace' }).click();
 
   await expect(page.getByTestId('overview-page')).toBeVisible();
-  await expect(page.getByText('Fictional dataset').first()).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Asset performance' })).toBeVisible();
+  await expect(page.getByText(/fictional|synthetic/i)).toHaveCount(0);
   await expect(page.getByText('Observation coverage')).toBeVisible();
 
   const scatter = page.locator('.chart-panel').filter({ has: page.getByRole('heading', { name: 'Availability and utilization' }) }).locator('.chart');
@@ -32,7 +33,7 @@ test('completes the analytical first-use workflow and reopens the saved project'
   await page.getByRole('button', { name: 'Forecasts' }).click();
   await page.getByRole('button', { name: 'Run backtest' }).click();
   await expect(page.getByRole('heading', { name: 'Forecast output' })).toBeVisible({ timeout: 30_000 });
-  await expect(page.getByText('Mean absolute held-out error')).toBeVisible();
+  await expect(page.getByTitle('Mean absolute held-out error')).toBeVisible();
   await expect(page.getByText('Empirical interval check')).toBeVisible();
   await expect(page.getByText(/admitted folds · \d+ excluded/)).toBeVisible();
 
@@ -75,7 +76,7 @@ test('completes the analytical first-use workflow and reopens the saved project'
 test('keeps the workspace usable at a narrow viewport', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
-  await page.getByRole('button', { name: 'Explore fictional dataset' }).click();
+  await page.getByRole('button', { name: 'Open example workspace' }).click();
   await expect(page.getByTestId('overview-page')).toBeVisible();
   await page.getByRole('button', { name: 'Assets' }).click();
   await expect(page.getByTestId('assets-page')).toBeVisible();
@@ -91,7 +92,7 @@ test('keeps the workspace usable at a narrow viewport', async ({ page }) => {
 
 test('reloads the cached application shell offline after first use', async ({ page, context }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: 'Explore fictional dataset' }).click();
+  await page.getByRole('button', { name: 'Open example workspace' }).click();
   await expect(page.getByTestId('overview-page')).toBeVisible();
   await page.waitForFunction(() => navigator.serviceWorker?.controller !== null, undefined, { timeout: 30_000 });
   await context.setOffline(true);
@@ -117,7 +118,7 @@ test('leaves the historical planning database untouched', async ({ page }) => {
     });
   });
 
-  await page.getByRole('button', { name: 'Explore fictional dataset' }).click();
+  await page.getByRole('button', { name: 'Open example workspace' }).click();
   await page.getByRole('button', { name: 'Save' }).click();
   const historical = await page.evaluate(async () => new Promise<unknown>((resolve, reject) => {
     const request = indexedDB.open('erp-local-application', 1);
@@ -135,9 +136,9 @@ test('leaves the historical planning database untouched', async ({ page }) => {
 
 test('fails closed when browser-local analytical state is corrupted', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: 'Explore fictional dataset' }).click();
+  await page.getByRole('button', { name: 'Open example workspace' }).click();
   await page.getByRole('button', { name: 'Save' }).click();
-  await page.getByRole('button', { name: 'E ERPWAM' }).click();
+  await page.getByRole('button', { name: 'ERPWAM' }).click();
   await page.evaluate(async () => new Promise<void>((resolve, reject) => {
     const request = indexedDB.open('erpwam-analytics-v1', 1);
     request.onerror = () => reject(request.error);

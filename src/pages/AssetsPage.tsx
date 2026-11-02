@@ -19,7 +19,7 @@ export function AssetsPage({ project, selectedAssetId, onSelectAsset }: AssetsPa
   const stats = summarize(output.map((item) => item.value));
   const recent = output.slice(-120);
   const option = {
-    color: ['#2367a8'],
+    color: ['#923f59'],
     tooltip: { trigger: 'axis' },
     grid: { left: 64, right: 18, top: 18, bottom: 42 },
     xAxis: { type: 'category', data: recent.map((item) => item.time), axisLabel: { hideOverlap: true } },
@@ -28,7 +28,7 @@ export function AssetsPage({ project, selectedAssetId, onSelectAsset }: AssetsPa
   };
   return (
     <div className="workspace-page" data-testid="assets-page">
-      <header className="page-heading"><div><span className="eyebrow">Assets</span><h1>{selected.asset.name}</h1><p>{selected.asset.code} · {selected.asset.location} · {selected.asset.ratedCapacity} u/h rated capacity</p></div><span className="fictional-badge">Fictional dataset</span></header>
+      <header className="page-heading"><div><h1>{selected.asset.name}</h1><p>{selected.asset.code} · {selected.asset.location} · {selected.asset.ratedCapacity} u/h rated capacity</p></div></header>
       <div className="detail-grid">
         <section className="panel compact-details">
           <h2>Observed history</h2>
@@ -43,7 +43,7 @@ export function AssetsPage({ project, selectedAssetId, onSelectAsset }: AssetsPa
         </section>
         <ChartPanel title="Recent output" description="Final 120 daily positions. Gaps are not connected or treated as zero." option={option} />
       </div>
-      <section className="panel asset-table-panel"><div className="panel-heading"><div><h2>Asset register</h2><p>Selection updates the detail view.</p></div></div><AssetTable rows={analysis.assetSummaries} selectedAssetId={activeId} onSelect={onSelectAsset} /></section>
+      <section className="panel asset-table-panel"><div className="panel-heading"><div><h2>Asset register</h2></div></div><AssetTable rows={analysis.assetSummaries} selectedAssetId={activeId} onSelect={onSelectAsset} /></section>
     </div>
   );
 }
