@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feature/analytical-redesign
   pull_request:
 
 permissions:
