@@ -1,39 +1,51 @@
 # ERPWAM
 
-A local-first workspace for asset performance, resource utilization, and capacity analysis. ERPWAM brings operating history, statistical summaries, baseline forecasting, and scenarios into one browser project.
+ERPWAM is a browser-based workbench for ordinary asset questions. What is
+available? What is underused? How much history is missing? Which simple
+forecast holds up when it is tested against data it has not seen?
 
 **[Open ERPWAM](https://davidoffichw.github.io/ERPWAM/)**
 
-## What it does
+The included Juniper Works dataset is fake on purpose. It gives you 18 assets
+and 18 months of repeatable daily observations, so you can use the whole app
+without uploading anything.
 
-- **Overview** — capacity, utilization, availability, observation coverage, and linked charts and asset tables.
-- **Assets** — asset details and historical output.
-- **Analytics** — distributions and descriptive statistics.
-- **Forecasts** — naive, seasonal naive, drift, and moving-mean baselines evaluated with expanding-window chronological backtests.
-- **Scenarios** — compare a declared capacity multiplier against a forecast without changing the input observations.
-- **Data** — inspect data quality and provenance, save locally, and export integrity-checked projects.
+## What you can do
 
-The included **Juniper Works** example contains 18 assets and 18 months of generated daily observations. A fixed seed makes it reproducible; it is not connected to live operations.
+- Review capacity, utilization, availability, coverage, and output history.
+- Filter assets by class and location, then move between charts and the asset
+  table without losing your selection.
+- Compare naive, seasonal naive, drift, and moving-mean forecasts with
+  expanding-window backtests.
+- Change one capacity assumption in a scenario without rewriting the observed
+  history.
+- Save a project in the browser or export an integrity-checked JSON copy.
+- Reopen the cached app offline after its first successful load.
 
-## Run locally
+ERPWAM does not pick a model for you, forecast real operations, or turn a
+scenario into a recommendation. The baseline methods are there to be inspected
+and compared.
 
-Requires Node.js 24.15 or later and npm 11 or later.
+## Run it locally
+
+You need Node.js 24.15 or later and npm 11 or later.
 
 ```bash
 npm ci
 npm run dev
 ```
 
-Open the address printed by Vite (normally `http://localhost:5173`) and select **Open example workspace**. Existing analytical projects can be imported as JSON.
+Open the address printed by Vite, normally `http://localhost:5173`, then choose
+**Open example workspace**.
 
-For a production preview:
+To check the production build locally:
 
 ```bash
 npm run build
 npm run preview
 ```
 
-## Verify
+## Run the checks
 
 ```bash
 npm run verify
@@ -41,14 +53,32 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-The checks cover strict TypeScript, linting, numerical and domain tests, build integrity, browser interactions, persistence, responsive layouts, and offline shell reload.
+`npm run verify` runs the linter, strict TypeScript checks, unit tests, and the
+production build. The browser suite covers the main workflow, local storage,
+portable exports, narrow layouts, the offline shell, and corrupted-state
+handling.
 
-## Method and limitations
+## How the numbers behave
 
-Ratios are calculated from underlying totals; missing values are never silently treated as zero. Forecasts preserve chronological training cutoffs and report MAE, RMSE, MASE where valid, bias, residuals, and excluded folds. Empirical forecast intervals are not calibrated probabilities. Scenarios are hypothetical comparisons, not operational recommendations.
+Ratios come from the underlying totals. Missing observations are not silently
+turned into zeroes. Forecast backtests keep their training cutoffs in the past
+and report MAE, RMSE, MASE when valid, bias, residuals, and excluded folds.
+Empirical intervals summarize earlier held-out errors; they are not calibrated
+probabilities.
 
-See the [analytical contract](docs/analytical-contract.md) and [reproducibility notes](docs/reproducibility.md) for methodology and data rules.
+The [analytical contract](docs/analytical-contract.md) and
+[reproducibility notes](docs/reproducibility.md) contain the exact data,
+aggregation, forecast, and scenario rules.
 
-Projects are held in browser IndexedDB. Export is recommended for backups. The analytical format introduced in v0.2.0 does not open earlier planning files from [v0.1.0](https://github.com/DavidoffichW/ERPWAM/tree/v0.1.0); historical browser data is not overwritten or migrated.
+## Storage and compatibility
 
-Built with TypeScript, React, Vite, ECharts, and IndexedDB. [MIT licensed](LICENSE); dependency licenses are listed in [third-party notices](THIRD_PARTY_NOTICES.md).
+Projects live in this browser's IndexedDB. That is convenient, but it is not a
+backup, so export any project you want to keep.
+
+The analytical format introduced in v0.2.0 does not open planning projects from
+[v0.1.0](https://github.com/DavidoffichW/ERPWAM/tree/v0.1.0). ERPWAM leaves that
+older browser data alone rather than guessing how to convert it.
+
+Built with TypeScript, React, Vite, ECharts, and IndexedDB. The project is
+[MIT licensed](LICENSE), and dependency licenses are listed in
+[third-party notices](THIRD_PARTY_NOTICES.md).

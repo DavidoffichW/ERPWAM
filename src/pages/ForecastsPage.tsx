@@ -112,13 +112,13 @@ export function ForecastsPage({ project, selectedAssetId, onSelectAsset, onProje
     <div className="workspace-page" data-testid="forecasts-page">
       <header className="page-heading"><div><h1>Output forecasts</h1></div></header>
       <section className="context-bar" aria-label="Forecast configuration">
-        <label>Asset<select value={assetId} onChange={(event) => onSelectAsset(event.target.value)}>{project.dataset.assets.map((asset) => <option key={asset.id} value={asset.id}>{asset.code} — {asset.name}</option>)}</select></label>
+        <label>Asset<select value={assetId} onChange={(event) => onSelectAsset(event.target.value)}>{project.dataset.assets.map((asset) => <option key={asset.id} value={asset.id}>{asset.code} · {asset.name}</option>)}</select></label>
         <label>Method<select value={method} onChange={(event) => setMethod(event.target.value as ForecastMethod)}>{Object.entries(methodNames).map(([id, name]) => <option key={id} value={id}>{name}</option>)}</select></label>
         <div className="context-note">14-day horizon · {missingCount} missing observations</div>
         <button type="button" className="primary-button" onClick={execute} disabled={running}>{running ? 'Running…' : 'Run backtest'}</button>
       </section>
       {error && <div className="error-banner" role="alert">{error}</div>}
-      {run ? <ForecastEvidence run={run} chartOption={chartOption} /> : <section className="empty-state"><h2>No forecast evidence yet</h2><p>Run a baseline to calculate chronological holdout errors and the final 14-day projection.</p></section>}
+      {run ? <ForecastEvidence run={run} chartOption={chartOption} /> : <section className="empty-state"><h2>No forecast yet</h2><p>Run a baseline to test it against held-out history and build a 14-day projection.</p></section>}
     </div>
   );
 }

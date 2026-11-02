@@ -10,7 +10,7 @@ export function AnalyticsPage({ project }: { project: AnalyticalProject }) {
     color: ['#923f59'],
     tooltip: { trigger: 'axis' },
     grid: { left: 58, right: 18, top: 18, bottom: 46 },
-    xAxis: { type: 'category', data: analysis.utilizationDistribution.map((bin) => `${(bin.lower * 100).toFixed(0)}–${(bin.upper * 100).toFixed(0)}%`), axisLabel: { interval: 0 } },
+    xAxis: { type: 'category', data: analysis.utilizationDistribution.map((bin) => `${(bin.lower * 100).toFixed(0)}-${(bin.upper * 100).toFixed(0)}%`), axisLabel: { interval: 0 } },
     yAxis: { type: 'value', minInterval: 1, name: 'Assets' },
     series: [{ type: 'bar', data: analysis.utilizationDistribution.map((bin) => bin.count) }],
   };
@@ -22,7 +22,7 @@ export function AnalyticsPage({ project }: { project: AnalyticalProject }) {
           <div><dt>Sample size</dt><dd>{stats.count}</dd></div>
           <div><dt>Mean</dt><dd>{stats.mean === null ? 'Unavailable' : `${(stats.mean * 100).toFixed(2)}%`}</dd></div>
           <div><dt>Median</dt><dd>{stats.median === null ? 'Unavailable' : `${(stats.median * 100).toFixed(2)}%`}</dd></div>
-          <div><dt>Q1 – Q3</dt><dd>{stats.q1 === null || stats.q3 === null ? 'Unavailable' : `${(stats.q1 * 100).toFixed(2)}% – ${(stats.q3 * 100).toFixed(2)}%`}</dd></div>
+          <div><dt>Q1 to Q3</dt><dd>{stats.q1 === null || stats.q3 === null ? 'Unavailable' : `${(stats.q1 * 100).toFixed(2)}% to ${(stats.q3 * 100).toFixed(2)}%`}</dd></div>
           <div><dt>Sample standard deviation</dt><dd>{stats.standardDeviation === null ? 'Unavailable' : `${(stats.standardDeviation * 100).toFixed(2)} pp`}</dd></div>
           <div><dt>Missing asset summaries</dt><dd>{stats.missing}</dd></div>
         </dl></section>

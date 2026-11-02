@@ -44,8 +44,8 @@ export function OverviewPage(props: OverviewPageProps) {
     xAxis: {
       type: 'category',
       name: 'Utilization',
-      data: analysis.utilizationDistribution.map((bin) => `${(bin.lower * 100).toFixed(0)}–${(bin.upper * 100).toFixed(0)}%`),
-      axisLabel: { interval: 0 },
+      data: analysis.utilizationDistribution.map((bin) => `${(bin.lower * 100).toFixed(0)}-${(bin.upper * 100).toFixed(0)}`),
+      axisLabel: { interval: 0, rotate: 35, fontSize: 11 },
     },
     yAxis: { type: 'value', name: 'Assets', minInterval: 1 },
     series: [{ type: 'bar', data: analysis.utilizationDistribution.map((bin) => bin.count) }],
@@ -63,7 +63,7 @@ export function OverviewPage(props: OverviewPageProps) {
       symbolSize: (value: number[]) => 7 + value[2]! / 8,
       data: analysis.assetSummaries.map((item) => ({
         id: item.asset.id,
-        label: `${item.asset.code} — ${item.asset.name}`,
+        label: `${item.asset.code} · ${item.asset.name}`,
         value: [item.utilization * 100, item.availability * 100, item.asset.ratedCapacity],
         itemStyle: { color: item.asset.id === props.selectedAssetId ? '#ba824e' : '#923f59' },
       })),
@@ -88,7 +88,7 @@ export function OverviewPage(props: OverviewPageProps) {
         <div>
           
           <h1>Asset performance</h1>
-          <p>{project.dataset.startDate.slice(0, 7)} – {project.dataset.endDate.slice(0, 7)}</p>
+          <p>{project.dataset.startDate.slice(0, 7)} to {project.dataset.endDate.slice(0, 7)}</p>
         </div>
         
       </header>
