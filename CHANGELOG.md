@@ -3,7 +3,7 @@
 ## 0.2.0 (2026-11-02)
 
 - Replace the planning-specific product domain with asset and resource analytics.
-- Add a deterministic fictional asset corpus, statistical exploration, transparent forecast baselines, rolling-origin backtests, and isolated scenarios.
+- Add the deterministic Juniper Works corpus, statistical exploration, transparent forecast baselines, rolling-origin backtests, and isolated scenarios.
 - Add versioned analytical project storage and integrity-checked portable exports in a new browser database namespace.
 - Keep the prior planning application's storage and backup formats untouched; no automatic reinterpretation or migration is performed.
 - Validate portable projects deeply before saving or opening them, including references, bounds, semantic layers, and source-content identity.

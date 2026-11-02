@@ -1,17 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import { createJuniperDataset } from '../src/data/juniper';
 
-describe('Fictional Juniper Works corpus', () => {
+describe('Juniper Works corpus', () => {
   it('generates byte-identical scientific content repeatedly', async () => {
     const first = await createJuniperDataset();
     const second = await createJuniperDataset();
-    expect(first.contentHash).toBe('c99a3178c15ad9040effba398709bfebcf68e64f6b86a3aab622c9659e8c6e0f');
+    expect(first.contentHash).toBe('7be8622f2d3966cb63b04b55dbce3ff487df3bf4150a1f80436ad6352282e0f8');
     expect(first.contentHash).toBe(second.contentHash);
     expect(first.revisionId).toBe(second.revisionId);
     expect(first.observations).toEqual(second.observations);
   });
 
-  it('contains the declared synthetic scope and quality distinctions', async () => {
+  it('contains the declared scope and quality distinctions', async () => {
     const dataset = await createJuniperDataset();
     expect(dataset.fictional).toBe(true);
     expect(dataset.assets).toHaveLength(18);

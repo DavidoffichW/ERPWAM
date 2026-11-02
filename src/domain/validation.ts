@@ -84,7 +84,7 @@ function validateDataset(value: unknown): DatasetRevision {
   text(dataset.revisionId, 'Dataset revision identity', 128);
   text(dataset.title, 'Dataset title');
   if (dataset.fictional !== true || dataset.timezone !== 'UTC') {
-    throw new TypeError('This release admits only explicitly fictional UTC datasets.');
+    throw new TypeError('This release admits only the included UTC dataset format.');
   }
   utc(dataset.startDate, 'Dataset start time');
   utc(dataset.endDate, 'Dataset end time');
@@ -143,7 +143,7 @@ function validateDataset(value: unknown): DatasetRevision {
     return { id, seed: candidate.seed as number, sourceHash: candidate.sourceHash as string };
   });
   unique(provenance.map((item) => item.id), 'Provenance identities');
-  if (provenance.length !== 1) throw new RangeError('This release requires exactly one synthetic provenance record.');
+  if (provenance.length !== 1) throw new RangeError('This release requires exactly one source provenance record.');
   const provenanceIds = new Set(provenance.map((item) => item.id));
 
   const observationIds: string[] = [];

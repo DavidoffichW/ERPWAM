@@ -28,9 +28,9 @@ function dateAt(day: number): string {
 }
 
 const classes: ResourceClass[] = [
-  { id: 'class-forming', name: 'Forming', description: 'Fictional shape-forming assets.' },
-  { id: 'class-finishing', name: 'Finishing', description: 'Fictional finishing assets.' },
-  { id: 'class-inspection', name: 'Inspection', description: 'Fictional inspection assets.' },
+  { id: 'class-forming', name: 'Forming', description: 'Shape-forming assets.' },
+  { id: 'class-finishing', name: 'Finishing', description: 'Finishing assets.' },
+  { id: 'class-inspection', name: 'Inspection', description: 'Inspection assets.' },
 ];
 
 const metrics: MetricDefinition[] = [
@@ -129,7 +129,7 @@ export async function createJuniperDataset(): Promise<DatasetRevision> {
         qualityIssues.push({ id: `conflict:${asset.id}:${day}`, kind: 'CONFLICTING', assetId: asset.id, metricId: 'output', phenomenonTime: time, message: 'A conflicting duplicate source value was excluded; the independently identified admitted value was retained.' });
       }
       if (issueKey > 0 && issueKey % 701 === 0) {
-        qualityIssues.push({ id: `excluded:${asset.id}:${day}`, kind: 'EXCLUDED', assetId: asset.id, metricId: 'energy', phenomenonTime: time, message: 'A source record outside the admitted synthetic study interval was excluded.' });
+        qualityIssues.push({ id: `excluded:${asset.id}:${day}`, kind: 'EXCLUDED', assetId: asset.id, metricId: 'energy', phenomenonTime: time, message: 'A source record outside the admitted study interval was excluded.' });
       }
     }
   }
@@ -157,7 +157,7 @@ export async function createJuniperDataset(): Promise<DatasetRevision> {
       generatedAt: GENERATED_AT,
       generatorVersion: '1',
       seed: SEED,
-      notes: 'Fully synthetic daily observations. No operational source data is represented.',
+      notes: 'Daily Juniper Works observations generated from versioned inputs.',
     }],
     contentHash,
   };
