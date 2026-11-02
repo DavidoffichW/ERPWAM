@@ -10,12 +10,13 @@ test('completes the analytical first-use workflow and reopens the saved project'
   page.on('pageerror', (error) => pageErrors.push(error.message));
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Understand how assets and resources perform over time.' })).toBeVisible();
+  await expect(page.locator('body')).not.toContainText(/synthetic|fictional|fake/i);
   await page.getByRole('button', { name: 'Open example workspace' }).click();
 
   await expect(page.getByTestId('overview-page')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Asset performance' })).toBeVisible();
-  await expect(page.getByText('Synthetic data')).toBeVisible();
   await expect(page.getByText('Observation coverage')).toBeVisible();
+  await expect(page.locator('body')).not.toContainText(/synthetic|fictional|fake/i);
 
   const scatter = page.locator('.chart-panel').filter({ has: page.getByRole('heading', { name: 'Availability and utilization' }) }).locator('.chart');
   await scatter.focus();
@@ -43,6 +44,7 @@ test('completes the analytical first-use workflow and reopens the saved project'
   await expect(page.getByText('SCENARIO').first()).toBeVisible();
 
   await page.getByRole('button', { name: 'Data' }).click();
+  await expect(page.locator('body')).not.toContainText(/synthetic|fictional|fake/i);
   await page.getByRole('button', { name: 'Save locally' }).click();
   await expect(page.getByRole('status').filter({ hasText: 'Project saved' })).toBeVisible();
 

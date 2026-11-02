@@ -1,8 +1,8 @@
 # ERPWAM v0.2.0
 
 ERPWAM is now an asset and resource intelligence workspace. The built-in
-Juniper Works project is fictional and reproducible: use it to explore asset
-history, utilization, availability, distributions, transparent forecast
+Juniper Works project is reproducible: use it to explore asset history,
+utilization, availability, distributions, transparent forecast
 baselines, and an explicit capacity scenario without sending data to a server.
 
 This release includes:
@@ -27,4 +27,4 @@ available from the v0.1.0 tag.
 
 Forecast intervals are empirical held-out residual bands, not calibrated
 probability guarantees. Scenarios are assumptions, not predictions or
-operational recommendations. All included data are synthetic.
+operational recommendations.

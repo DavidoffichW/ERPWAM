@@ -6,9 +6,8 @@ forecast holds up when it is tested against data it has not seen?
 
 **[Open ERPWAM](https://davidoffichw.github.io/ERPWAM/)**
 
-The included Juniper Works dataset is fake on purpose. It gives you 18 assets
-and 18 months of repeatable daily observations, so you can use the whole app
-without uploading anything.
+Juniper Works gives you 18 assets and 18 months of repeatable daily
+observations, so you can use the whole app without uploading anything.
 
 ## What you can do
 

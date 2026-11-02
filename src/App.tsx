@@ -177,14 +177,13 @@ export function App() {
 
   const project = state.project;
   const route = project.view.route;
-  const isSynthetic = project.dataset.provenance.some((item) => item.sourceKind === 'SYNTHETIC_GENERATOR');
   return <ErrorBoundary><div className="app-shell">
     <aside className="sidebar">
       <button type="button" className="brand sidebar-brand" onClick={() => setState((current) => ({ ...current, project: null }))}>ERPWAM</button>
       <nav aria-label="Workspace">{routes.map((item) => <button type="button" key={item.id} className={route === item.id ? 'nav-item active' : 'nav-item'} aria-current={route === item.id ? 'page' : undefined} onClick={() => navigate(item.id)}><NavIcon route={item.id} /><span>{item.label}</span></button>)}</nav>
     </aside>
     <div className="app-main">
-      <header className="app-toolbar"><div><strong>{project.title}</strong>{isSynthetic && <span className="dataset-badge">Synthetic data</span>}{state.dirty && <span className="unsaved-indicator" title="Workspace changes not saved">Unsaved</span>}</div><div className="toolbar-actions"><button type="button" className="secondary-button" onClick={persist}>Save</button><button type="button" className="secondary-button" onClick={exportProject}>Export</button></div></header>
+      <header className="app-toolbar"><div><strong>{project.title}</strong>{state.dirty && <span className="unsaved-indicator" title="Workspace changes not saved">Unsaved</span>}</div><div className="toolbar-actions"><button type="button" className="secondary-button" onClick={persist}>Save</button><button type="button" className="secondary-button" onClick={exportProject}>Export</button></div></header>
       {state.error && <div className="error-banner" role="alert">{state.error}</div>}
       {state.notice && <div className="toast-message" role="status">{state.notice}</div>}
       <main><Suspense fallback={<div className="workspace-loading" role="status">Loading workspace…</div>}>

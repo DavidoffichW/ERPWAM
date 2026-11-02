@@ -1,7 +1,7 @@
 # Reproducibility
 
 The Juniper Works generator uses seed `4271903`, generator version `1`, UTC
-daily timestamps, fixed synthetic asset definitions, and explicit equations.
+daily timestamps, fixed asset definitions, and explicit equations.
 Repeated generation produces the same canonical SHA-256 dataset identity.
 
 Portable projects use schema `erpwam.analytics.portable/1`. The payload is
