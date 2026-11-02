@@ -1,13 +1,13 @@
 {
   "name": "ERPWAM",
   "short_name": "ERPWAM",
-  "description": "Offline-capable operational planning and decision evidence.",
+  "description": "Offline-capable asset and resource intelligence.",
   "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#07101f",
-  "theme_color": "#0c1829",
+  "background_color": "#f3f6fa",
+  "theme_color": "#17243a",
   "icons": [
     { "src": "./erpwam-mark.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ]

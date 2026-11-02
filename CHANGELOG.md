@@ -1,6 +1,20 @@
 # Changelog
 
-## 0.2.2 (Unreleased)
+## 0.2.0 (2026-11-02)
+
+- Replace the planning-specific product domain with asset and resource analytics.
+- Add a deterministic fictional asset corpus, statistical exploration, transparent forecast baselines, rolling-origin backtests, and isolated scenarios.
+- Add versioned analytical project storage and integrity-checked portable exports in a new browser database namespace.
+- Keep the prior planning application's storage and backup formats untouched; no automatic reinterpretation or migration is performed.
+- Validate portable projects deeply before saving or opening them, including references, bounds, semantic layers, and source-content identity.
+- Qualify forecast controls before iteration, record missing-target fold exclusions, and report sequential held-out interval coverage and width.
+- Restrict the first hypothetical workflow to the capacity-multiplier assumption that the output baseline can represent correctly.
+
+This is the next minor release after v0.1.0. The entries below preserve the
+public application's historical and qualified-but-unreleased record; no
+v0.1.1, v0.2.1, or v0.2.2 tag was published.
+
+## 0.2.2 (Historical qualified interface label, not released)
 
 - Replace the explanatory, panel-heavy interface with a compact task-oriented workspace.
 - Make the planning grid, replacement candidates, portfolio results, and saved decisions the dominant content in each view.
@@ -17,7 +31,9 @@
 - Gate the manual Pages deployment behind the same application checks used by CI.
 - Document planning-data identity, advisory ranking, exact and approximate portfolio methods, browser persistence, and offline limits.
 
-This qualification was not tagged or published as a standalone release. There were no 0.2.0 or 0.2.1 releases.
+This qualification was not tagged or published as a standalone release. At
+that point there were no 0.2.0 or 0.2.1 releases; the analytical v0.2.0 release
+was created later from independent source.
 
 ## 0.1.0 (2026-10-27)
 

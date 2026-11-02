@@ -1,26 +1,14 @@
 {
   "schemaVersion": "1.0",
   "application": "ERPWAM",
-  "applicationVersion": "0.2.2",
+  "version": "0.2.0",
   "distributionMode": "static-browser",
   "networkRequiredForNormalOperation": false,
-  "modelAssets": [
-    {
-      "id": "erp.synthetic-demo-linear.v1",
-      "kind": "transparent-linear-demonstration",
-      "identity": "embedded-source-specification",
-      "revision": "sha256:d698aa5d16a4ae29171bd1ba9367f4c2a4321f53f5107f8220f7a96dbf8ea54c",
-      "redistribution": "independently-authored",
-      "limitation": "Synthetic demonstration mechanics only; not evidence of field prediction accuracy."
-    }
-  ],
+  "analyticalContracts": ["erpwam.analytics.dataset/1", "erpwam.analytics.project/1", "erpwam.analytics.portable/1"],
   "runtimeDependencies": [
     { "name": "react", "version": "19.3.1", "license": "MIT" },
     { "name": "react-dom", "version": "19.3.1", "license": "MIT" },
-    { "name": "ag-grid-community", "version": "36.2.0", "license": "MIT" },
-    { "name": "ag-grid-react", "version": "36.2.0", "license": "MIT" },
-    { "name": "fflate", "version": "0.8.3", "license": "MIT" },
-    { "name": "read-excel-file", "version": "9.3.12", "license": "MIT" },
-    { "name": "write-excel-file", "version": "4.1.1", "license": "MIT" }
+    { "name": "echarts", "version": "6.1.0", "license": "Apache-2.0" },
+    { "name": "@tanstack/react-table", "version": "8.21.3", "license": "MIT" }
   ]
 }
