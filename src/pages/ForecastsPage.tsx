@@ -27,6 +27,7 @@ export function ForecastsPage({ project, selectedAssetId, onSelectAsset, onProje
   const run = [...project.forecastRuns].reverse().find((item) => item.spec.assetId === assetId && item.spec.method === method)
     ?? [...project.forecastRuns].reverse().find((item) => item.spec.assetId === assetId);
   const series = useMemo(() => assetDailySeries(project.dataset, assetId, 'output'), [assetId, project.dataset]);
+  const missingCount = series.filter((item) => item.value === null).length;
 
   async function execute() {
     setRunning(true);
@@ -57,16 +58,53 @@ export function ForecastsPage({ project, selectedAssetId, onSelectAsset, onProje
   }
 
   const recent = series.slice(-90);
+  const forecastDates = run?.forecast.map((item) => item.time) ?? [];
+  const lower = run?.forecast.map((item) => item.lower80) ?? [];
+  const intervalWidth = run?.forecast.map((item) => item.lower80 === null || item.upper80 === null
+    ? null
+    : item.upper80 - item.lower80) ?? [];
   const chartOption = {
     color: ['#2367a8', '#7157a8'],
     tooltip: { trigger: 'axis' },
-    legend: { top: 0 },
+    legend: { top: 0, data: ['Observed', 'Forecast', '80% empirical band'] },
     grid: { left: 64, right: 20, top: 42, bottom: 48 },
-    xAxis: { type: 'category', data: [...recent.map((item) => item.time), ...(run?.forecast.map((item) => item.time) ?? [])], axisLabel: { hideOverlap: true } },
+    xAxis: { type: 'category', data: [...recent.map((item) => item.time), ...forecastDates], axisLabel: { hideOverlap: true } },
     yAxis: { type: 'value', name: 'Output (u)' },
     series: [
-      { name: 'Observed', type: 'line', showSymbol: false, connectNulls: false, data: [...recent.map((item) => item.value), ...(run?.forecast.map(() => null) ?? [])] },
+      {
+        name: 'Observed',
+        type: 'line',
+        showSymbol: false,
+        connectNulls: false,
+        data: [...recent.map((item) => item.value), ...forecastDates.map(() => null)],
+        markLine: run ? {
+          symbol: 'none',
+          label: { formatter: 'Forecast origin' },
+          lineStyle: { type: 'dotted', color: '#66788c' },
+          data: [{ xAxis: series.at(-1)!.time }],
+        } : undefined,
+      },
       { name: 'Forecast', type: 'line', showSymbol: true, lineStyle: { type: 'dashed' }, data: [...recent.map(() => null), ...(run?.forecast.map((item) => item.value) ?? [])] },
+      {
+        name: 'Interval lower boundary',
+        type: 'line',
+        stack: 'empirical-band',
+        symbol: 'none',
+        lineStyle: { opacity: 0 },
+        areaStyle: { opacity: 0 },
+        tooltip: { show: false },
+        data: [...recent.map(() => null), ...lower],
+      },
+      {
+        name: '80% empirical band',
+        type: 'line',
+        stack: 'empirical-band',
+        symbol: 'none',
+        lineStyle: { opacity: 0 },
+        areaStyle: { color: 'rgba(113, 87, 168, 0.28)' },
+        tooltip: { show: false },
+        data: [...recent.map(() => null), ...intervalWidth],
+      },
     ],
   };
 
@@ -76,7 +114,7 @@ export function ForecastsPage({ project, selectedAssetId, onSelectAsset, onProje
       <section className="context-bar" aria-label="Forecast configuration">
         <label>Asset<select value={assetId} onChange={(event) => onSelectAsset(event.target.value)}>{project.dataset.assets.map((asset) => <option key={asset.id} value={asset.id}>{asset.code} — {asset.name}</option>)}</select></label>
         <label>Method<select value={method} onChange={(event) => setMethod(event.target.value as ForecastMethod)}>{Object.entries(methodNames).map(([id, name]) => <option key={id} value={id}>{name}</option>)}</select></label>
-        <div className="context-note">14-day horizon · 120-day initial window · 14-day step</div>
+        <div className="context-note">{series.length} daily positions · {missingCount} missing · 14-day horizon · 120-day initial window · 14-day step</div>
         <button type="button" className="primary-button" onClick={execute} disabled={running}>{running ? 'Running…' : 'Run backtest'}</button>
       </section>
       {error && <div className="error-banner" role="alert">{error}</div>}
@@ -97,9 +135,10 @@ function ForecastEvidence({ run, chartOption }: { run: ForecastRun; chartOption:
       <article className="metric-card"><span>MASE</span><strong>{formatMetric(run.metrics.mase)}</strong><small>Scaled against each fold's naive change</small></article>
       <article className="metric-card"><span>Bias</span><strong>{formatMetric(run.metrics.bias)} u</strong><small>Mean actual minus predicted error</small></article>
       <article className="metric-card"><span>Evidence</span><strong>{run.metrics.sampleCount}</strong><small>{run.metrics.foldCount} admitted folds · {run.excludedFolds.length} excluded</small></article>
+      <article className="metric-card"><span>Empirical interval check</span><strong>{run.metrics.intervalCoverage80 === null ? 'Unavailable' : `${(run.metrics.intervalCoverage80 * 100).toFixed(1)}%`}</strong><small>{run.metrics.intervalSampleCount} sequential held-out intervals · mean width {formatMetric(run.metrics.intervalMeanWidth80)} u</small></article>
     </section>
     <ChartPanel title="Observed history and forecast" description="Solid values are observations; dashed values are forecasts. Empirical intervals are reported in the table when supported." option={chartOption} />
     <section className="panel"><div className="panel-heading"><div><h2>Forecast output</h2><p>The interval is an empirical held-out residual band, not a guaranteed predictive probability.</p></div></div><div className="table-scroll"><table className="data-table"><thead><tr><th>Date</th><th>Layer</th><th>Point</th><th>80% empirical lower</th><th>80% empirical upper</th></tr></thead><tbody>{run.forecast.map((point) => <tr key={point.time}><td>{point.time}</td><td>{point.layer}</td><td>{point.value.toFixed(2)} {point.unit}</td><td>{point.lower80?.toFixed(2) ?? 'Unavailable'}</td><td>{point.upper80?.toFixed(2) ?? 'Unavailable'}</td></tr>)}</tbody></table></div></section>
-    <section className="panel"><div className="panel-heading"><div><h2>Residuals by horizon</h2><p>Signed error is actual minus predicted.</p></div></div><div className="table-scroll"><table className="data-table"><thead><tr><th>Horizon</th><th>Samples</th><th>MAE</th><th>Bias</th></tr></thead><tbody>{run.diagnostics.map((item) => <tr key={item.horizon}><td>{item.horizon} day</td><td>{item.residuals.length}</td><td>{formatMetric(item.mae)}</td><td>{formatMetric(item.bias)}</td></tr>)}</tbody></table></div>{run.warnings.map((warning) => <p className="warning-text" key={warning}>{warning}</p>)}</section>
+    <section className="panel"><div className="panel-heading"><div><h2>Residuals by horizon</h2><p>Signed error is actual minus predicted. Interval coverage uses only residuals from earlier origins.</p></div></div><div className="table-scroll"><table className="data-table"><thead><tr><th>Horizon</th><th>Samples</th><th>MAE</th><th>RMSE</th><th>MASE</th><th>Bias</th><th>Interval coverage</th></tr></thead><tbody>{run.diagnostics.map((item) => <tr key={item.horizon}><td>{item.horizon} day</td><td>{item.residuals.length}</td><td>{formatMetric(item.mae)}</td><td>{formatMetric(item.rmse)}</td><td>{formatMetric(item.mase)}</td><td>{formatMetric(item.bias)}</td><td>{item.intervalCoverage80 === null ? 'Unavailable' : `${(item.intervalCoverage80 * 100).toFixed(1)}% (${item.intervalSampleCount})`}</td></tr>)}</tbody></table></div>{run.warnings.map((warning) => <p className="warning-text" key={warning}>{warning}</p>)}{run.excludedFolds.length > 0 && <details><summary>Excluded fold reasons</summary><ul>{run.excludedFolds.map((item) => <li key={item.originIndex}>Origin {item.originIndex}: {item.reason}</li>)}</ul></details>}</section>
   </>;
 }

@@ -133,13 +133,21 @@ export interface ForecastMetricSummary {
   bias: number | null;
   sampleCount: number;
   foldCount: number;
+  intervalCoverage80: number | null;
+  intervalMeanWidth80: number | null;
+  intervalSampleCount: number;
 }
 
 export interface HorizonDiagnostic {
   horizon: number;
   residuals: number[];
   mae: number | null;
+  rmse: number | null;
+  mase: number | null;
   bias: number | null;
+  intervalCoverage80: number | null;
+  intervalMeanWidth80: number | null;
+  intervalSampleCount: number;
 }
 
 export interface ForecastPoint {
@@ -167,7 +175,7 @@ export interface ForecastRun {
 }
 
 export interface ScenarioAssumption {
-  kind: 'CAPACITY_MULTIPLIER' | 'UTILIZATION_CAP' | 'DEMAND_MULTIPLIER';
+  kind: 'CAPACITY_MULTIPLIER';
   value: number;
   unit: '1';
   effectiveFrom: string;

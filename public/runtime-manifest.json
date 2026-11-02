@@ -1,6 +1,7 @@
 {
   "schemaVersion": "1.0",
   "application": "ERPWAM",
+  "version": "0.2.0",
   "distributionMode": "static-browser",
   "networkRequiredForNormalOperation": false,
   "analyticalContracts": ["erpwam.analytics.dataset/1", "erpwam.analytics.project/1", "erpwam.analytics.portable/1"],

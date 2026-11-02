@@ -1,4 +1,5 @@
 import type { AnalyticalProject } from '../domain/contracts';
+import { validateAnalyticalProject } from '../domain/validation';
 
 const DATABASE_NAME = 'erpwam-analytics-v1';
 const DATABASE_VERSION = 1;
@@ -28,6 +29,7 @@ function transactionComplete(transaction: IDBTransaction): Promise<void> {
 }
 
 export async function saveProject(project: AnalyticalProject): Promise<AnalyticalProject> {
+  await validateAnalyticalProject(project);
   const database = await openDatabase();
   try {
     const saved = structuredClone(project);
@@ -50,7 +52,7 @@ export async function loadProject(id: string): Promise<AnalyticalProject | null>
       request.onerror = () => reject(request.error ?? new Error('Unable to read the project.'));
     });
     await transactionComplete(transaction);
-    return result ? structuredClone(result) : null;
+    return result ? structuredClone(await validateAnalyticalProject(result)) : null;
   } finally {
     database.close();
   }

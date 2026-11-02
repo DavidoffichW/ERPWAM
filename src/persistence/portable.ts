@@ -1,22 +1,11 @@
 import { canonicalStringify, sha256 } from '../domain/canonical';
 import type { AnalyticalProject, PortableProject } from '../domain/contracts';
+import { validateAnalyticalProject } from '../domain/validation';
 
-const MAX_PORTABLE_BYTES = 20 * 1024 * 1024;
-
-function isAnalyticalProject(value: unknown): value is AnalyticalProject {
-  if (!value || typeof value !== 'object') return false;
-  const project = value as Partial<AnalyticalProject>;
-  return project.schema === 'erpwam.analytics.project/1'
-    && typeof project.id === 'string'
-    && typeof project.title === 'string'
-    && project.dataset?.schema === 'erpwam.analytics.dataset/1'
-    && Array.isArray(project.dataset.assets)
-    && Array.isArray(project.dataset.observations)
-    && Array.isArray(project.forecastRuns)
-    && Array.isArray(project.scenarios);
-}
+export const MAX_PORTABLE_BYTES = 20 * 1024 * 1024;
 
 export async function exportPortableProject(project: AnalyticalProject): Promise<string> {
+  await validateAnalyticalProject(project);
   const payload = structuredClone(project);
   const digest = await sha256(canonicalStringify(payload));
   const portable: PortableProject = {
@@ -45,10 +34,10 @@ export async function importPortableProject(source: string): Promise<AnalyticalP
   if (candidate.integrity?.algorithm !== 'SHA-256' || typeof candidate.integrity.digest !== 'string') {
     throw new TypeError('Portable project integrity metadata is missing.');
   }
-  if (!isAnalyticalProject(candidate.payload)) throw new TypeError('Portable analytical project payload is invalid.');
   const actual = await sha256(canonicalStringify(candidate.payload));
   if (actual !== candidate.integrity.digest) throw new Error('Portable project integrity verification failed.');
-  return structuredClone(candidate.payload);
+  const payload = await validateAnalyticalProject(candidate.payload);
+  return structuredClone(payload);
 }
 
 export function downloadPortableProject(source: string, filename: string): void {

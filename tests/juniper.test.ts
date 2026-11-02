@@ -5,7 +5,7 @@ describe('Fictional Juniper Works corpus', () => {
   it('generates byte-identical scientific content repeatedly', async () => {
     const first = await createJuniperDataset();
     const second = await createJuniperDataset();
-    expect(first.contentHash).toBe('ceb2e1fe169008675ff0a927c9b7c03e6b071dccc0a929d106144d2105a8df0e');
+    expect(first.contentHash).toBe('c99a3178c15ad9040effba398709bfebcf68e64f6b86a3aab622c9659e8c6e0f');
     expect(first.contentHash).toBe(second.contentHash);
     expect(first.revisionId).toBe(second.revisionId);
     expect(first.observations).toEqual(second.observations);
@@ -31,5 +31,14 @@ describe('Fictional Juniper Works corpus', () => {
     const day = 86_400_000;
     expect(series.every((time, index) => index === 0 || (time - series[index - 1]!) % day === 0)).toBe(true);
     expect(dataset.qualityIssues.some((issue) => issue.kind === 'MISSING')).toBe(true);
+    const missingOrInvalid = dataset.qualityIssues.filter((issue) => issue.kind === 'MISSING' || issue.kind === 'INVALID');
+    const expected = dataset.assets.length * 546 * dataset.metrics.length;
+    expect(expected - dataset.observations.length).toBe(missingOrInvalid.length);
+    for (const issue of missingOrInvalid) {
+      const admitted = dataset.observations.some((item) => item.assetId === issue.assetId
+        && item.metricId === issue.metricId
+        && item.phenomenonTime === issue.phenomenonTime);
+      expect(admitted).toBe(false);
+    }
   });
 });

@@ -92,13 +92,13 @@ export async function createJuniperDataset(): Promise<DatasetRevision> {
     for (let day = 0; day < DAYS; day += 1) {
       const issueKey = assetIndex * 37 + day;
       const time = dateAt(day);
-      if (issueKey > 0 && issueKey % 613 === 0) {
+      const missingOutput = issueKey > 0 && issueKey % 613 === 0;
+      const invalidAvailableHours = issueKey > 0 && issueKey % 997 === 0;
+      if (missingOutput) {
         qualityIssues.push({ id: `missing:${asset.id}:${day}`, kind: 'MISSING', assetId: asset.id, metricId: 'output', phenomenonTime: time, message: 'Expected daily observation was not supplied.' });
-        continue;
       }
-      if (issueKey > 0 && issueKey % 997 === 0) {
+      if (invalidAvailableHours) {
         qualityIssues.push({ id: `invalid:${asset.id}:${day}`, kind: 'INVALID', assetId: asset.id, metricId: 'available-hours', phenomenonTime: time, message: 'Source value exceeded the declared 24-hour domain and was rejected.' });
-        continue;
       }
 
       const scheduledHours = 24;
@@ -116,7 +116,10 @@ export async function createJuniperDataset(): Promise<DatasetRevision> {
       const energy = output * (0.44 + (assetIndex % 4) * 0.025);
       const values = [scheduledHours, availableHours, output, demand, energy];
       for (let metricIndex = 0; metricIndex < metrics.length; metricIndex += 1) {
-        observations.push(observation(asset, metrics[metricIndex]!, day, values[metricIndex]!));
+        const metric = metrics[metricIndex]!;
+        if ((metric.id === 'output' && missingOutput)
+          || (metric.id === 'available-hours' && invalidAvailableHours)) continue;
+        observations.push(observation(asset, metric, day, values[metricIndex]!));
       }
 
       if (issueKey > 0 && issueKey % 887 === 0) {

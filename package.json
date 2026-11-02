@@ -1,6 +1,6 @@
 {
   "name": "erpwam",
-  "version": "0.2.2",
+  "version": "0.2.0",
   "private": true,
   "license": "MIT",
   "description": "Explore asset performance, resource utilization, forecasts, and scenarios in your browser.",

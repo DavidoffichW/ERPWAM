@@ -77,14 +77,19 @@ ERPWAM planning databases and files are neither read nor migrated. Browser
 storage is convenient local persistence, not a guaranteed backup; export
 important work from the Data workspace.
 
-## Compatibility boundary
+## Version and compatibility
 
 The analytical application uses a separate `erpwam-analytics-v1` IndexedDB
 database and versioned portable format. It leaves browser data created by the
 earlier planning application untouched and will not reinterpret planning
-backups as analytical projects. A future release version and any migration
-policy will be chosen from the reviewed compatibility impact, not from this
-development branch name.
+backups as analytical projects. Any migration format would require a separate,
+explicit conversion tool.
+
+Version 0.2.0 is a deliberate pre-1.0 product change from the planning-oriented
+v0.1.0 release. The historical source and release remain available at the
+[`v0.1.0` tag](https://github.com/DavidoffichW/ERPWAM/tree/v0.1.0). The new
+application does not delete the earlier `erp-local-application` browser
+database, but it cannot open that data.
 
 ERPWAM is licensed under the [MIT License](LICENSE). Third-party dependency
 licenses are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

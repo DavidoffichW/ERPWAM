@@ -3,7 +3,7 @@ import { createJuniperProject } from './data/juniper';
 import type { AnalyticalProject, ProjectViewState } from './domain/contracts';
 import { LandingPage } from './pages/LandingPage';
 import { deleteProject, listProjects, loadProject, saveProject } from './persistence/projectStore';
-import { downloadPortableProject, exportPortableProject, importPortableProject } from './persistence/portable';
+import { downloadPortableProject, exportPortableProject, importPortableProject, MAX_PORTABLE_BYTES } from './persistence/portable';
 
 type Route = ProjectViewState['route'];
 
@@ -83,6 +83,9 @@ export function App() {
   async function importProject(file: File) {
     setState((current) => ({ ...current, loading: true, error: null }));
     try {
+      if (file.size > MAX_PORTABLE_BYTES) {
+        throw new RangeError('Portable project exceeds the 20 MiB admission limit.');
+      }
       const project = await importPortableProject(await file.text());
       setState((current) => ({ ...current, project, loading: false, dirty: true, notice: 'Portable project integrity verified.' }));
     } catch (reason) {

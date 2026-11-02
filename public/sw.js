@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'erp-static-analytical-v1';
+const CACHE_VERSION = 'erp-static-analytics-v0.2.0';
 const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './erpwam-mark.svg', './runtime-manifest.json'];
 
 async function primeAppShell() {

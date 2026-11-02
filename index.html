@@ -6,17 +6,15 @@
     <meta name="color-scheme" content="dark light" />
     <meta name="theme-color" content="#17243a" />
     <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'"
+    />
+    <meta
       name="description"
       content="ERPWAM: local asset and resource intelligence, forecasting, and scenario analysis."
     />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./erpwam-mark.svg" type="image/svg+xml" />
-    <script>
-      (() => {
-        const saved = localStorage.getItem('erpwam-analytics-theme');
-        document.documentElement.dataset.theme = saved === 'dark' ? 'dark' : 'light';
-      })();
-    </script>
     <title>ERPWAM</title>
   </head>
   <body>
