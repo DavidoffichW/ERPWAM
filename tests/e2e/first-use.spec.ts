@@ -14,7 +14,7 @@ test('completes the analytical first-use workflow and reopens the saved project'
 
   await expect(page.getByTestId('overview-page')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Asset performance' })).toBeVisible();
-  await expect(page.getByText(/fictional|synthetic/i)).toHaveCount(0);
+  await expect(page.getByText('Synthetic data')).toBeVisible();
   await expect(page.getByText('Observation coverage')).toBeVisible();
 
   const scatter = page.locator('.chart-panel').filter({ has: page.getByRole('heading', { name: 'Availability and utilization' }) }).locator('.chart');
@@ -55,7 +55,7 @@ test('completes the analytical first-use workflow and reopens the saved project'
   await expect(page.getByRole('heading', { name: 'Saved workspaces' })).toBeVisible();
   await page.getByRole('button', { name: /Juniper Works analysis/ }).click();
   await expect(page.getByTestId('data-page')).toBeVisible();
-  await expect(page.getByRole('status').filter({ hasText: 'Local project reopened.' })).toBeVisible();
+  await expect(page.getByRole('status').filter({ hasText: 'Project reopened.' })).toBeVisible();
 
   await page.getByRole('button', { name: 'Settings' }).click();
   page.once('dialog', (dialog) => dialog.accept());
@@ -68,7 +68,7 @@ test('completes the analytical first-use workflow and reopens the saved project'
   if (!downloadPath) throw new Error('Playwright did not retain the exported project file.');
   await page.locator('input[type="file"]').setInputFiles(downloadPath);
   await expect(page.getByTestId('data-page')).toBeVisible();
-  await expect(page.getByRole('status').filter({ hasText: 'Portable project integrity verified.' })).toBeVisible();
+  await expect(page.getByRole('status').filter({ hasText: 'Project imported and checked.' })).toBeVisible();
   expect(externalRequests).toEqual([]);
   expect(pageErrors).toEqual([]);
 });

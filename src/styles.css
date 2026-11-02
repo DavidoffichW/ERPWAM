@@ -59,6 +59,7 @@ p { color: var(--muted); line-height: 1.55; }
 .file-button { position: relative; cursor: pointer; }
 .file-button input { position: absolute; width: 1px; height: 1px; opacity: 0; }
 .scenario-badge { display: inline-flex; align-items: center; width: fit-content; padding: 0.3rem 0.55rem; border-radius: 999px; color: #7e4a0d; background: #fff0d9; border: 1px solid #e9c58d; font-size: 0.72rem; font-weight: 750; white-space: nowrap; }
+.dataset-badge { display: inline-flex; align-items: center; width: fit-content; padding: 0.25rem 0.5rem; border-radius: 999px; color: var(--accent); background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border)); font-size: 0.7rem; font-weight: 750; white-space: nowrap; }
 
 .landing-page { max-width: 1320px; margin: 0 auto; min-height: 100vh; padding: 1.25rem clamp(1rem, 4vw, 4rem) 4rem; }
 .landing-nav { display: flex; justify-content: space-between; align-items: center; min-height: 3.5rem; color: var(--muted); font-size: 0.9rem; }
@@ -109,6 +110,8 @@ select, input { min-height: 2.3rem; padding: 0.42rem 0.6rem; border: 1px solid v
 .panel-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.8rem; }.panel-heading p { margin-bottom: 0; font-size: 0.82rem; }
 .chart { width: 100%; height: 300px; margin-top: 0.5rem; }
 .asset-table-panel { margin-top: 0.8rem; }
+.asset-table-panel .table-scroll { max-height: 520px; }
+.asset-table-panel .data-table thead { position: sticky; top: 0; z-index: 1; }
 .table-scroll { width: 100%; overflow: auto; margin-top: 0.75rem; }
 .data-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
 .data-table th, .data-table td { padding: 0.68rem 0.72rem; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
